@@ -29,3 +29,6 @@
 /UniversityProfUnit/.vs
 /UniversityProfUnit/UniversityProfUnit/bin/Debug/netcoreapp3.1
 /UniversityProfUnit/UniversityProfUnit/obj
+/AuthenticationProject/.vs
+/AuthenticationProject/AuthenticationProject/bin/Debug/net6.0
+/AuthenticationProject/AuthenticationProject/obj
