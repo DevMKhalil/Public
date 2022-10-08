@@ -1,4 +1,8 @@
 ﻿@page
+@using HotelReservationWithAuthentication.Data
+@using HotelReservationWithAuthentication.Pages
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
 @model ErrorModel
 @{
     ViewData["Title"] = "Error";

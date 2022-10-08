@@ -1,9 +1,9 @@
-﻿using HotelReservation.Logic;
+﻿using HotelReservationWithAuthentication.Logic;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace HotelReservation.Application.Reservation
+namespace HotelReservationWithAuthentication.Application.Reservation
 {
     public class CalculateReservation : IRequest<decimal>
     {

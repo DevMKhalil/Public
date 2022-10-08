@@ -1,4 +1,4 @@
-﻿namespace HotelReservation.Logic
+﻿namespace HotelReservationWithAuthentication.Logic
 {
     public class RoomTypePricing
     {

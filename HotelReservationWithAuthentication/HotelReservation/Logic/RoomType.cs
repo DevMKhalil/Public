@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace HotelReservation.Logic
+namespace HotelReservationWithAuthentication.Logic
 {
     public class RoomType
     {

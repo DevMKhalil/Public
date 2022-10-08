@@ -1,12 +1,14 @@
 ﻿using CSharpFunctionalExtensions;
-using HotelReservation.Application;
-using HotelReservation.Logic;
+using HotelReservationWithAuthentication.Application;
+using HotelReservationWithAuthentication.Logic;
+using HotelReservationWithAuthentication.Data;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
-namespace HotelReservation.Data
+namespace HotelReservationWithAuthentication.Data
 {
-    public class HotelReservationContext : DbContext, IHotelReservationContext
+    public class HotelReservationContext : IdentityDbContext<ApplicationUser>, IHotelReservationContext
     {
         public HotelReservationContext(DbContextOptions options) : base(options)
         {

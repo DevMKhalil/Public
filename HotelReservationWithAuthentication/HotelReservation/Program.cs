@@ -1,8 +1,11 @@
-using HotelReservation.Application;
-using HotelReservation.Data;
+using HotelReservationWithAuthentication.Application;
+using HotelReservationWithAuthentication.Logic;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using System;
 using System.Reflection;
+using HotelReservationWithAuthentication.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +25,10 @@ builder.Services.AddDbContext<HotelReservationContext>(options =>
 
 });
 
+builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
+options.SignIn.RequireConfirmedAccount = true)
+.AddEntityFrameworkStores<HotelReservationContext>();
+
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
@@ -38,6 +45,8 @@ if (!app.Environment.IsDevelopment())
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

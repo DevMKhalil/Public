@@ -1,8 +1,8 @@
-﻿using HotelReservation.Logic;
+﻿using HotelReservationWithAuthentication.Logic;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 
-namespace HotelReservation.Data.EFConfigration
+namespace HotelReservationWithAuthentication.Data.EFConfigration
 {
     public class MealPlanConfigration : IEntityTypeConfiguration<MealPlan>
     {

@@ -1,8 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
-using HotelReservation.Logic;
+using HotelReservationWithAuthentication.Logic;
 using Microsoft.EntityFrameworkCore;
 
-namespace HotelReservation.Application
+namespace HotelReservationWithAuthentication.Application
 {
     public interface IHotelReservationContext
     {

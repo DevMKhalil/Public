@@ -1,13 +1,13 @@
-﻿using HotelReservation.Application.Reservation;
-using HotelReservation.Data;
-using HotelReservation.Logic;
+﻿using HotelReservationWithAuthentication.Application.Reservation;
+using HotelReservationWithAuthentication.Data;
+using HotelReservationWithAuthentication.Logic;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
-namespace HotelReservation.Pages
+namespace HotelReservationWithAuthentication.Pages
 {
     public class IndexModel : PageModel
     {
