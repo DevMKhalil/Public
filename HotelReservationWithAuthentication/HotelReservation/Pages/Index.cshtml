@@ -1,0 +1,86 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <div class="row">
+        <div class="col-xs-12">
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row">
+                    <div class="col-sm-4 form-group">
+                        <label for="name">Name</label>
+                        <input asp-for="ReservationDto.Name" type="text" class="form-control" required>
+                        <span asp-validation-for="ReservationDto.Name" class="text-danger"></span>
+                    </div>
+                    <div class="col-sm-4 form-group">
+                        <label for="email">Email</label>
+                        <input asp-for="ReservationDto.Email" type="email" class="form-control" required>
+                        <span asp-validation-for="ReservationDto.Email" class="text-danger"></span>
+                    </div>
+                    <div class="col-sm-4 form-group">
+                        <label for="country">Country</label>
+                        <input asp-for="ReservationDto.Country" type="text" class="form-control" required>
+                        <span asp-validation-for="ReservationDto.Country" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 form-group">
+                        <label for="adults">Adults</label>
+                        <input asp-for="ReservationDto.AdultsCount" type="number" class="form-control" required min="0" step="1">
+                        <span asp-validation-for="ReservationDto.AdultsCount" class="text-danger"></span>
+                    </div>
+                    <div class="col-sm-4 form-group">
+                        <label for="children">Children</label>
+                        <input asp-for="ReservationDto.ChildrenCount" type="number" class="form-control" required min="0" step="1">
+                        <span asp-validation-for="ReservationDto.ChildrenCount" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 form-group">
+                        <label for="roomType">Room Type</label>
+                        <select asp-for="ReservationDto.RoomTypeId" asp-items="@(new SelectList(Model.RoomTypeList, "RoomTypeId", "Name"))" class="form-control" required>
+                            <option value="" disabled selected>--Select--</option>
+                        </select>
+                        <span asp-validation-for="ReservationDto.RoomTypeId" class="text-danger"></span>
+                    </div>
+                    <div class="col-sm-4 form-group">
+                        <label for="mealPlan">Meal Plan</label>
+                        <select asp-for="ReservationDto.MealPlanId" asp-items="@(new SelectList(Model.MealPlanList, "MealPlanId", "Name"))" class="form-control" required>
+                            <option value="" disabled selected>--Select--</option>
+                        </select>
+                        <span asp-validation-for="ReservationDto.MealPlanId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 form-group">
+                        <label for="checkIn">Check-in</label>
+                        <input asp-for="ReservationDto.CheckinDate" type="date" class="form-control" min="01/01/2021" required min="01/01/2021" required value="2021-01-01"
+                               min="2021-01-01" max="2021-12-31">
+                        <span asp-validation-for="ReservationDto.CheckinDate" class="text-danger"></span>
+                    </div>
+                    <div class="col-sm-4 form-group">
+                        <label for="checkOut">Check-out</label>
+                        <input asp-for="ReservationDto.CheckoutDate" type="date" class="form-control" min="01/01/2021" required value="2021-01-01"
+                               min="2021-01-01" max="2021-12-31">
+                        <span asp-validation-for="ReservationDto.CheckoutDate" class="text-danger"></span>
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-xs-12 form-group" style="margin-top: 1cm">
+                        <button class="btn btn-success" type="submit">GetReservationTotal</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 form-group" style="margin-top: 1cm">
+                        <label for="reservationCost">Reservation Cost</label>
+                        <input asp-for="ReservationDto.ReservationCost" type="number" class="form-control" disabled style="text-align: center;font-size:xx-large">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
