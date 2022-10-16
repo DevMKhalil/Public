@@ -8,7 +8,7 @@ using System.Reflection;
 using HotelReservationWithAuthentication.Data;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("HotelReservationContextConnection") ?? throw new InvalidOperationException("Connection string 'HotelReservationContextConnection' not found.");
+var connectionString = builder.Configuration.GetValue<string>("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'HotelReservationContextConnection' not found.");
 
 ILoggerFactory ConsolLoggerFactory = LoggerFactory.Create(builder =>
 {
