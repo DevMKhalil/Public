@@ -4,15 +4,14 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './Header/header.component';
-import { Routes, RouterModule } from '@angular/router';
 import { ItemListComponent } from './item-list/item-list.component';
 import { ShopingCartComponent } from './shoping-cart/shoping-cart.component';
 import { ItemListItemComponent } from './item-list/item-list-item/item-list-item.component';
+import { ItemDetailsComponent } from './item-details/item-details.component';
+import { NotFoundComponent } from './not-found/not-found.component';
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-const appRoutes: Routes = [
-  {path:'',component: ItemListComponent},
-  {path:'ShopingCart',component: ShopingCartComponent},
-]
 
 @NgModule({
   declarations: [
@@ -20,12 +19,16 @@ const appRoutes: Routes = [
     HeaderComponent,
     ItemListComponent,
     ShopingCartComponent,
-    ItemListItemComponent
+    ItemListItemComponent,
+    ItemDetailsComponent,
+    NotFoundComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    RouterModule.forRoot(appRoutes)
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

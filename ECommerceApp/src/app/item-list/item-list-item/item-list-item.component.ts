@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Item } from '../../Shared/Item.model';
+import Item from '../../Shared/Item.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-item-list-item',
@@ -10,9 +11,12 @@ export class ItemListItemComponent implements OnInit {
 
   @Input() item!: Item; 
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
   }
 
+  OnLoadItem(){
+    this.router.navigate(["/ItemDetails"]);
+  }
 }

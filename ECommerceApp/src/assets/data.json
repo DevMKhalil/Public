@@ -1,0 +1,92 @@
+[
+    {
+        "id":1,
+        "code":"01",
+        "name":"Item 1",
+        "price":100,
+        "amount":0,
+        "imageURL":"https://m.media-amazon.com/images/I/41Fln4bMH1L._AC_.jpg",
+        "discription":"Some quick example text to build on the card title and make up the bulk of the card's content."
+    },
+    {
+        "id":2,
+        "code":"02",
+        "name":"Item 2",
+        "price":200,
+        "amount":0,
+        "imageURL":"https://m.media-amazon.com/images/I/41pXu93xgzL._AC_.jpg",
+        "discription":"Some quick example text to build on the card title and make up the bulk of the card's content."
+    },
+    {
+        "id":3,
+        "code":"03",
+        "name":"Item 3",
+        "price":300,
+        "amount":0,
+        "imageURL":"https://eg.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/05/578481/1.jpg?8896",
+        "discription":"Some quick example text to build on the card title and make up the bulk of the card's content."
+    },
+    {
+        "id":4,
+        "code":"04",
+        "name":"Item 4",
+        "price":400,
+        "amount":0,
+        "imageURL":"https://eg.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/68/205922/1.jpg?8014",
+        "discription":"Some quick example text to build on the card title and make up the bulk of the card's content."
+    },
+    {
+        "id":5,
+        "code":"05",
+        "name":"Item 5",
+        "price":500,
+        "amount":0,
+        "imageURL":"https://eg.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/49/831062/1.jpg?7126",
+        "discription":"Some quick example text to build on the card title and make up the bulk of the card's content."
+    },
+    {
+        "id":6,
+        "code":"06",
+        "name":"Item 6",
+        "price":600,
+        "amount":0,
+        "imageURL":"https://cdn.shopify.com/s/files/1/0032/2401/0861/products/madmext-mavi-ekoseli-gomlek-4704-d6d0_900x.jpg?v=1621775865",
+        "discription":"Some quick example text to build on the card title and make up the bulk of the card's content."
+    },
+    {
+        "id":7,
+        "code":"07",
+        "name":"Item 7",
+        "price":700,
+        "amount":0,
+        "imageURL":"https://m.media-amazon.com/images/I/41hnqpOFonL._AC_SY780_.jpg",
+        "discription":"Some quick example text to build on the card title and make up the bulk of the card's content."
+    },
+    {
+        "id":8,
+        "code":"08",
+        "name":"Item 8",
+        "price":800,
+        "amount":0,
+        "imageURL":"https://image.made-in-china.com/155f0j00ZsGEPOIKfcpF/Men-s-Dress-Shirt-Men-Plus-Size-Long-Sleeve-Male-Business-Shirts-Slim-Fit-Office-Man-s.jpg",
+        "discription":"Some quick example text to build on the card title and make up the bulk of the card's content."
+    },
+    {
+        "id":9,
+        "code":"09",
+        "name":"Item 9",
+        "price":900,
+        "amount":0,
+        "imageURL":"https://m.media-amazon.com/images/I/41Fln4bMH1L._AC_.jpg",
+        "discription":"Some quick example text to build on the card title and make up the bulk of the card's content."
+    },
+    {
+        "id":10,
+        "code":"010",
+        "name":"Item 10",
+        "price":1000,
+        "amount":0,
+        "imageURL":"https://eg.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/49/831062/1.jpg?7126",
+        "discription":"Some quick example text to build on the card title and make up the bulk of the card's content."
+    }
+]
