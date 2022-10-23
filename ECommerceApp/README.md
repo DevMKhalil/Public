@@ -1,3 +1,9 @@
+# App description
+
+This App Is An ECommerce App include Item List and Item Detail And Shopping Cart 
+
+User Can View Item Details And Add Item To The Shopping Cart
+
 # ECommerceApp
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.2.6.
