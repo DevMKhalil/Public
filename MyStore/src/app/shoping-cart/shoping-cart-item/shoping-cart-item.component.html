@@ -7,7 +7,7 @@
       <div id="amount-div" class="col-md-12">
         <a class="buttonIncrease col-md-2" (click)="IncreaseAmount(item)">+</a>
         <div class="col-md-8">
-            <input type="number" class="form-control input-sm" [(ngModel)]="item.amount" (change)="AmountChanged(item)">
+            <input type="number" class="form-control input-sm" (ngModelChange)="AmountChanged($event)" [(ngModel)]="item.amount" (change)="DomAmountChanged(item)">
         </div>
         <a class="buttonDecrease col-md-2" (click)="DecreaseAmount(item)">-</a>
       </div>

@@ -11,7 +11,7 @@ export class ShopingCartItemComponent implements OnInit {
 
   @Input() item!: Item;
 
-  @Output() itemChanged = new EventEmitter<Item>();
+  @Output() itemChanged = new EventEmitter();
 
   constructor(private cartService: ShopingCartService) { }
 
@@ -30,7 +30,7 @@ export class ShopingCartItemComponent implements OnInit {
     }
 
     item.amount += 1;
-    this.itemChanged.emit(item);
+    this.itemChanged.emit();
   }
 
   DecreaseAmount(item: Item){
@@ -39,16 +39,20 @@ export class ShopingCartItemComponent implements OnInit {
     }
 
     item.amount -= 1;
-    this.itemChanged.emit(item);
+    this.itemChanged.emit();
   }
 
-  AmountChanged(item: Item){
-    if (item.amount < 1){
+  AmountChanged(amount: number){
+    if (amount < 1){
       alert("Amount Must Be Greater Than Zero");
-      item.amount = 1;
-      return;
     }
+  }
 
-    this.itemChanged.emit(item);
+    DomAmountChanged(item: Item){
+      if (item.amount < 1){
+        item.amount = 1;
+      }
+
+    this.itemChanged.emit();
   }
 }

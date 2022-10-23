@@ -4,6 +4,31 @@ This App Is An ECommerce App include Item List and Item Detail And Shopping Cart
 
 User Can View Item Details And Add Item To The Shopping Cart
 
+# structure of the application
+
+Application Sections :
+
+    1 - Header : a folder has header component that Shows in The Header And Navigate between Pages
+
+    2 - item-list : a folder has item-list Component that shows all items 
+                    and the child item-list-item component is the single item component 
+                    and item Service
+
+    3 - item-details : a folder has item-details Component that shows the item in details 
+
+    4 - shopping-cart : has shopping-cart component that shows The shoping cart page 
+                    and the child component customer-info Component that shows the customer Data
+                    and the child component shopping-cart-item component is the single shopping cart item
+                    and shopping cart service
+
+    5 - shared : a folder has Item Model that used in all application
+
+    6 - not-found : a folder has not-found Component that apprear when the route is wronge or leade to nothing
+
+    7 - ConfirmationPage : a folder has Confirmation Page component that shos after the customer check out the order
+    
+    8 - appRouting : a file has app routing Module wich has links that route to previouse components
+
 # ECommerceApp
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.2.6.
