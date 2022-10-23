@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import Item from '../../Shared/Item.model';
 import { Router } from '@angular/router';
+import { ShopingCartService } from '../../shoping-cart/shoping-cart.service';
 
 @Component({
   selector: 'app-item-list-item',
@@ -11,12 +12,14 @@ export class ItemListItemComponent implements OnInit {
 
   @Input() item!: Item; 
 
-  constructor(private router: Router) { }
+  constructor(private router: Router,private cartService: ShopingCartService) { }
 
   ngOnInit(): void {
   }
 
-  OnLoadItem(){
-    this.router.navigate(["/ItemDetails"]);
+  AddToCart(){
+    this.cartService.addItem(this.item!);
+    alert("Item Added Successfully");
+    this.router.navigate(["/ShopingCart"]);
   }
 }

@@ -1,0 +1,58 @@
+.buttonIncrease {
+    display: inline-block;
+    padding: 5px 5px;
+    font-size: 10px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    outline: none;
+    color: #fff;
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 100%;
+  }
+  
+  .buttonIncrease:hover {background-color: #3e8e41}
+  
+  .buttonIncrease:active {
+    background-color: #3e8e41;
+    transform: translateY(4px);
+  }
+
+  .buttonDecrease {
+    display: inline-block;
+    padding: 5px 5px;
+    font-size: 10px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    outline: none;
+    color: #fff;
+    background-color: rgb(243, 11, 11);
+    border: none;
+    border-radius: 100%;
+  }
+  
+  .buttonDecrease:hover {background-color: #f54d4d}
+  
+  .buttonDecrease:active {
+    background-color: #c54242;
+    transform: translateY(4px);
+  }
+ 
+  .div-card{
+    width: 20rem; 
+    margin: 1%; 
+    padding: 1%; 
+    border-style: outset;
+  }
+
+  .remove-button{
+    margin-top: 3%;
+  }
+
+  .div-row-container{
+    display: block; 
+    width: 100%; 
+    min-width: 100% !important;
+  }

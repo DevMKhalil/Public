@@ -1,1 +1,8 @@
-<p>shoping-cart works!</p>
+    <div class="col-md-12" *ngIf="itemList.length !== 0">
+        <app-shoping-cart-item *ngFor="let item of itemList" [item]="item" (itemChanged)="CalculateTotal()"></app-shoping-cart-item>
+        <h2 class="h2-ItemsTotal">Items Total : {{totalCost}}</h2>
+        <hr>
+        <app-customer-info></app-customer-info>
+        <!-- <a class="btn btn-success btn-lg btn-block" (click)="OnSubmit()">Submit</a> -->
+    </div>
+    <h1 *ngIf="itemList.length === 0">No Items In Cart</h1>

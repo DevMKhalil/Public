@@ -21,6 +21,14 @@ export class ItemService {
     });
   }
 
+  GetItem(itemId: number) {
+    const subscription = this.http.get<Item[]>('../../assets/data.json').subscribe((items) => {
+      this.ItemList = items;
+    });
+    
+    subscription.unsubscribe();
+    return this.ItemList.find((item) => item.id === itemId);
+  }
   // private itemList: Item [] = [
   //   new Item(
   //     "01",

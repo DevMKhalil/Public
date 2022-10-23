@@ -1,10 +1,11 @@
-<div class="card col-md-4" style="width: 18rem; margin: 5%;">
+<div class="card col-md-4" style="width: 24rem; margin-top: 5%; margin-left: 2%; margin-right: 2%;">
     <img class="card-img-top" [src]="item.imageURL" [alt]="item.name" style="max-height: 200px; max-width: 200px;">
     <div class="card-body">
         <h5 class="card-title">{{item.name}}</h5>
         <h6 class="card-subtitle mb-2 text-muted">{{item.code}}</h6>
         <p class="card-text">{{item.discription}}</p>
         <h6 class="card-subtitle mb-2 text-muted">{{item.price}}</h6>
-        <a class="btn btn-primary" (click)="OnLoadItem()">Open Item</a>
+        <a class="btn btn-info" [routerLink]="['/', 'ItemDetails', item.id]">Open Item</a>
+        <a class="btn btn-success" (click)="AddToCart()">Add To Cart</a>
     </div>
   </div>

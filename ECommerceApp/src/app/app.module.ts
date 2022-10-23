@@ -11,6 +11,9 @@ import { ItemDetailsComponent } from './item-details/item-details.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ShopingCartItemComponent } from './shoping-cart/shoping-cart-item/shoping-cart-item.component';
+import { ConfirmationPageComponent } from './confirmation-page/confirmation-page.component';
+import { CustomerInfoComponent } from './shoping-cart/customer-info/customer-info.component';
 
 
 @NgModule({
@@ -21,7 +24,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     ShopingCartComponent,
     ItemListItemComponent,
     ItemDetailsComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    ShopingCartItemComponent,
+    CustomerInfoComponent,
+    ConfirmationPageComponent
   ],
   imports: [
     BrowserModule,

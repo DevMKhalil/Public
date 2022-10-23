@@ -1,0 +1,39 @@
+<div class="col-md-12">
+    <form [formGroup]="myform" #form="ngForm" (ngSubmit)="OnSubmit()">
+        <div class="form-group row">
+        <label for="NameCust" class="col-sm-2 col-form-label">Name </label>
+        <div class="col-sm-10">
+            <input class="form-control" type="text" placeholder="Enter Your Name" required minlength="6" maxlength="25" id="NameCust" formControlName="custName">
+            <div *ngIf="myform.controls.custName.touched && myform.controls.custName.invalid">
+                <p *ngIf="myform.controls.custName.errors?.['required']">Name is required</p>
+                <p *ngIf="myform.controls.custName.errors?.['minlength']">Name should be at least 6 charcaters</p>
+                <p *ngIf="myform.controls.custName.errors?.['maxlength']">Name should be Less Than 26 charcaters</p>
+                <p *ngIf="myform.controls.custName.errors?.['pattern']">Please enter a vaild Name</p>
+            </div>
+        </div>
+        </div>
+        <div class="form-group row">
+            <label for="EmailCust" class="col-sm-2 col-form-label">Email </label>
+            <div class="col-sm-10">
+                <input  class="form-control" type="email" placeholder="Enter Your Email" required formControlName="custEmail" id="EmailCust">
+                <div *ngIf="myform.controls.custEmail.touched && myform.controls.custEmail.invalid">
+                    <p *ngIf="myform.controls.custEmail.errors?.['required']">Email is required</p>
+                    <p *ngIf="myform.controls.custEmail.errors?.['email']">Please enter a vaild Email</p>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="PhoneCust" class="col-sm-2 col-form-label">Phone </label>
+            <div class="col-sm-10">
+                <input  class="form-control" type="number" placeholder="Enter Your Phone" required minlength="6" maxlength="25" formControlName="custPhone" id="PhoneCust">
+                <div *ngIf="myform.controls.custPhone.touched && myform.controls.custPhone.invalid">
+                    <p *ngIf="myform.controls.custPhone.errors?.['required']">Phone is required</p>
+                    <p *ngIf="myform.controls.custPhone.errors?.['minlength']">Phone should be at least 6 charcaters</p>
+                    <p *ngIf="myform.controls.custPhone.errors?.['maxlength']">Phone should be Less Than 26 charcaters</p>
+                    <p *ngIf="myform.controls.custPhone.errors?.['pattern']">Please enter a vaild Phone</p>
+                </div>
+            </div>
+        </div>
+        <button type="submit" [disabled]="form.invalid" class="btn btn-success btn-lg btn-block">Check Out</button>
+    </form>
+</div>
