@@ -39,3 +39,6 @@
 /WebPWrecover/bin/Debug/net6.0
 /WebPWrecover/obj/Debug/net6.0
 /WebPWrecover/obj
+/AuthenticationAndAuthorization/AuthenticationAndAuthorization/bin/Debug/net6.0
+/AuthenticationAndAuthorization/AuthenticationAndAuthorization/obj
+/AuthenticationAndAuthorization/.vs
