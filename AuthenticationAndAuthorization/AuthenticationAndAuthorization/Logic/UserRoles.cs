@@ -23,5 +23,6 @@ namespace AuthenticationAndAuthorization.Logic
         public static readonly UserRole seller = new UserRole(2, "Seller");
         public static readonly UserRole buyer = new UserRole(3, "Buyer");
         public static readonly UserRole worker = new UserRole(4, "Worker");
+        public static readonly UserRole worker = new UserRole(5, "Standard");
     }
 }

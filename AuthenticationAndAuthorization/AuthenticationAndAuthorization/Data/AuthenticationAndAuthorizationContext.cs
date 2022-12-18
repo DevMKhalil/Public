@@ -13,6 +13,7 @@ namespace AuthenticationAndAuthorization.Data
 
         }
         public DbSet<UserModel> UserModels { get; set; }
+        public DbSet<Movie> Movies { get; set; }
 
         public async Task<Result> SaveChangesWithValidation(CancellationToken cancellationToken = default)
         {
