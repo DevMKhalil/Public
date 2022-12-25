@@ -1,8 +1,10 @@
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using UsingIdentityWithApi.Application;
 using UsingIdentityWithApi.Data;
+using UsingIdentityWithApi.Logic;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +24,8 @@ builder.Services.AddDbContext<UsingIdentityWithApiContext>(options =>
     .UseSqlServer(builder.Configuration.GetValue<string>("DefaultConnection"));
 
 });
+builder.Services.AddIdentityCore<ApiUser>(options => { });
+builder.Services.AddScoped<IUserStore<ApiUser>, ApiUserStore>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
