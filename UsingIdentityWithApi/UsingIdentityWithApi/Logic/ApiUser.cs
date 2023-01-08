@@ -1,10 +1,9 @@
-﻿namespace UsingIdentityWithApi.Logic
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace UsingIdentityWithApi.Logic
 {
-    public class ApiUser
+    public class ApiUser : IdentityUser<string>
     {
-        public string Id { get; set; }
-        public string UserName { get; set; }
-        public string NormalizedUserName { get; set; }
-        public string PasswordHash { get; set; }
+
     }
 }

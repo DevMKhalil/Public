@@ -1,12 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using UsingIdentityWithApi.Logic;
 
 namespace UsingIdentityWithApi.Data.EFConfigration
 {
-    public class ApiUserConfigration : IEntityTypeConfiguration<ApiUser>
+    public class IdentityUserConfigration : IEntityTypeConfiguration<IdentityUser>
     {
-        public void Configure(EntityTypeBuilder<ApiUser> builder)
+        public void Configure(EntityTypeBuilder<IdentityUser> builder)
         {
             builder.ToTable("ApiUsers");
             builder.Property(p => p.Id).HasColumnName("Id");

@@ -1,5 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
+using System.Security.Claims;
+using UsingIdentityWithApi.Application.Users.Query.Login;
 using UsingIdentityWithApi.Application.Users.Query.Register;
 using UsingIdentityWithApi.Logic;
 
@@ -10,11 +15,15 @@ namespace UsingIdentityWithApi.Controllers
     public class UsersController : ControllerBase
     {
         private readonly UserManager<ApiUser> _userManager;
+        readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UsersController(UserManager<ApiUser> userManager)
+        public UsersController(UserManager<ApiUser> userManager, IHttpContextAccessor httpContextAccessor)
         {
             _userManager = userManager;
+            _httpContextAccessor = httpContextAccessor;
         }
+
+        [Authorize]
         [HttpGet]
         public IActionResult Index()
         {
@@ -24,7 +33,7 @@ namespace UsingIdentityWithApi.Controllers
 
         [HttpPost("Register")]
         //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterUserDto userDto)
+        public async Task<IActionResult> Register([FromBody] RegisterUserDto userDto)
         {
             if (ModelState.IsValid)
             {
@@ -49,6 +58,32 @@ namespace UsingIdentityWithApi.Controllers
                 return Ok();
             }
     
+            return BadRequest();
+        }
+
+
+        [HttpGet("Login")]
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login([FromQuery]LoginUserDto loginDto)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByNameAsync(loginDto.UserName);
+
+                if (user is not null && await _userManager.CheckPasswordAsync(user,loginDto.Password))
+                {
+                    var identity = new ClaimsIdentity("cookies");
+                    identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id));
+                    identity.AddClaim(new Claim(ClaimTypes.Name, user.UserName));
+
+                    await _httpContextAccessor.HttpContext.SignInAsync("cookies", new ClaimsPrincipal(identity));
+
+                    return Ok();
+                }
+
+                return BadRequest("Invalid UserName Or Password");
+            }
+
             return BadRequest();
         }
     }

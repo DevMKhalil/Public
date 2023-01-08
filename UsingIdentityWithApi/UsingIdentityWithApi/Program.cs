@@ -1,6 +1,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using UsingIdentityWithApi.Application;
 using UsingIdentityWithApi.Data;
@@ -24,14 +27,37 @@ builder.Services.AddDbContext<UsingIdentityWithApiContext>(options =>
     .UseSqlServer(builder.Configuration.GetValue<string>("DefaultConnection"));
 
 });
+
+//builder.Services.AddDefaultIdentity<ApiUser>(options => { })
+//        .AddEntityFrameworkStores<UsingIdentityWithApiContext>();
+
+//builder.Services.AddAuthentication(o =>
+//{
+//    o.DefaultScheme = IdentityConstants.ApplicationScheme;
+//    o.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+//})
+//.AddIdentityCookies(o => { });
+
+//builder.Services.AddIdentityCore<ApiUser>(o =>
+//{
+//    o.Stores.MaxLengthForKeys = 128;
+//    o.SignIn.RequireConfirmedAccount = true;
+//})
+//.AddDefaultTokenProviders();
+builder.Services.AddAuthentication("cookies").AddCookie("cookies", options => options.LoginPath = "/api/Users/Login");
+
 builder.Services.AddIdentityCore<ApiUser>(options => { });
 builder.Services.AddScoped<IUserStore<ApiUser>, ApiUserStore>();
+//builder.Services.AddScoped<IUserStore<ApiUser>,UserOnlyStore<ApiUser, UsingIdentityWithApiContext>>();
+//builder.Services.AddScoped<IUserStore<ApiUser>, CustomIdentityUserStore>();
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 builder.Services.AddTransient<IUsingIdentityWithApiContext, UsingIdentityWithApiContext>();
+builder.Services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 var app = builder.Build();
 
@@ -44,6 +70,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

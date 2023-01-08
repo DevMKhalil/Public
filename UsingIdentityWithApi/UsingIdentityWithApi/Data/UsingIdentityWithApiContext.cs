@@ -1,4 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using UsingIdentityWithApi.Application;
@@ -6,9 +8,9 @@ using UsingIdentityWithApi.Logic;
 
 namespace UsingIdentityWithApi.Data
 {
-    public class UsingIdentityWithApiContext : DbContext, IUsingIdentityWithApiContext
+    public class UsingIdentityWithApiContext : IdentityDbContext<ApiUser, IdentityRole<string>,string>, IUsingIdentityWithApiContext
     {
-        public UsingIdentityWithApiContext(DbContextOptions options) : base(options)
+        public UsingIdentityWithApiContext(DbContextOptions<UsingIdentityWithApiContext> options) : base(options)
         {
 
         }
