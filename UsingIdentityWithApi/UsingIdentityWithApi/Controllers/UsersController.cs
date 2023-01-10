@@ -14,10 +14,10 @@ namespace UsingIdentityWithApi.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly UserManager<ApiUser> _userManager;
+        private readonly ApiUserManager _userManager;
         readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UsersController(UserManager<ApiUser> userManager, IHttpContextAccessor httpContextAccessor)
+        public UsersController(ApiUserManager userManager, IHttpContextAccessor httpContextAccessor)
         {
             _userManager = userManager;
             _httpContextAccessor = httpContextAccessor;

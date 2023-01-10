@@ -48,6 +48,7 @@ builder.Services.AddAuthentication("cookies").AddCookie("cookies", options => op
 
 builder.Services.AddIdentityCore<ApiUser>(options => { });
 builder.Services.AddScoped<IUserStore<ApiUser>, ApiUserStore>();
+builder.Services.AddScoped<ApiUserManager>();
 //builder.Services.AddScoped<IUserStore<ApiUser>,UserOnlyStore<ApiUser, UsingIdentityWithApiContext>>();
 //builder.Services.AddScoped<IUserStore<ApiUser>, CustomIdentityUserStore>();
 

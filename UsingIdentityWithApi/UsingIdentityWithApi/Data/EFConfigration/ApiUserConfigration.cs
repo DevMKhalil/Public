@@ -10,7 +10,7 @@ namespace UsingIdentityWithApi.Data.EFConfigration
         {
             builder.ToTable("ApiUsers");
             builder.Property(p => p.Id).HasColumnName("Id");
-            //builder.HasKey(p => p.UserId);
+            builder.HasKey(p => p.Id);
 
             //builder.Property(p => p.Id).IsRequired();
             //builder.Property(p => p.Id).HasMaxLength(450);

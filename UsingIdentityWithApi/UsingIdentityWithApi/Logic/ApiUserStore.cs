@@ -14,7 +14,7 @@ namespace UsingIdentityWithApi.Logic
         }
         public async Task<IdentityResult> CreateAsync(ApiUser user, CancellationToken cancellationToken)
         {
-            _context.Users.Add(user);
+            _context.XUsers.Add(user);
 
             var res = await _context.SaveChangesWithValidation(cancellationToken);
 
@@ -24,7 +24,7 @@ namespace UsingIdentityWithApi.Logic
 
         public async Task<IdentityResult> DeleteAsync(ApiUser user, CancellationToken cancellationToken)
         {
-            _context.Users.Remove(user);
+            _context.XUsers.Remove(user);
 
             var res = await _context.SaveChangesWithValidation(cancellationToken);
 
@@ -38,12 +38,12 @@ namespace UsingIdentityWithApi.Logic
 
         public async Task<ApiUser> FindByIdAsync(string userId, CancellationToken cancellationToken)
         {
-            return await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+            return await _context.XUsers.FirstOrDefaultAsync(x => x.Id == userId);
         }
 
         public async Task<ApiUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
         {
-            return await _context.Users.FirstOrDefaultAsync(x => x.NormalizedUserName == normalizedUserName);
+            return await _context.XUsers.FirstOrDefaultAsync(x => x.NormalizedUserName == normalizedUserName);
         }
 
         public Task<string> GetNormalizedUserNameAsync(ApiUser user, CancellationToken cancellationToken)
