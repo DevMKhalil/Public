@@ -46,7 +46,32 @@ builder.Services.AddDbContext<UsingIdentityWithApiContext>(options =>
 //.AddDefaultTokenProviders();
 builder.Services.AddAuthentication("cookies").AddCookie("cookies", options => options.LoginPath = "/api/Users/Login");
 
-builder.Services.AddIdentityCore<ApiUser>(options => { });
+builder.Services.AddIdentityCore<ApiUser>(options => {
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+});
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => {
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+})
+    .AddEntityFrameworkStores<UsingIdentityWithApiContext>()
+    .AddDefaultTokenProviders();
+
+
+//builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+//{
+//})
+//            .AddRoles<IdentityRole>()
+//            .AddEntityFrameworkStores<UsingIdentityWithApiContext>()
+//            .AddDefaultTokenProviders()
+//            .AddSignInManager();
+
+
 builder.Services.AddScoped<IUserStore<ApiUser>, ApiUserStore>();
 builder.Services.AddScoped<ApiUserManager>();
 //builder.Services.AddScoped<IUserStore<ApiUser>,UserOnlyStore<ApiUser, UsingIdentityWithApiContext>>();

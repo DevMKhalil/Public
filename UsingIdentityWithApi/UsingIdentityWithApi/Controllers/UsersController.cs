@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,12 +16,14 @@ namespace UsingIdentityWithApi.Controllers
     public class UsersController : ControllerBase
     {
         private readonly ApiUserManager _userManager;
+        private readonly Microsoft.AspNetCore.Identity.UserManager<IdentityUser> _aspUserManager;
         readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UsersController(ApiUserManager userManager, IHttpContextAccessor httpContextAccessor)
+        public UsersController(ApiUserManager userManager, IHttpContextAccessor httpContextAccessor, Microsoft.AspNetCore.Identity.UserManager<IdentityUser> aspUserManager)
         {
             _userManager = userManager;
             _httpContextAccessor = httpContextAccessor;
+            _aspUserManager = aspUserManager;
         }
 
         [Authorize]
@@ -58,6 +61,37 @@ namespace UsingIdentityWithApi.Controllers
                 return Ok();
             }
     
+            return BadRequest();
+        }
+
+
+
+        [HttpPost("AspRegister")]
+        public async Task<IActionResult> AspRegister([FromBody] RegisterUserDto userDto)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _aspUserManager.FindByNameAsync(userDto.UserName);
+
+                if (user is null)
+                {
+                    user = new IdentityUser
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        UserName = userDto.UserName,
+                    };
+
+                    var res = await _aspUserManager.CreateAsync(user, userDto.Password);
+
+                    if (res.Succeeded)
+                        return Ok();
+                    else
+                        return BadRequest(res.Errors);
+                }
+
+                return Ok();
+            }
+
             return BadRequest();
         }
 

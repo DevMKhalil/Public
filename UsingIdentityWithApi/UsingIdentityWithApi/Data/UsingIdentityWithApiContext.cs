@@ -8,13 +8,14 @@ using UsingIdentityWithApi.Logic;
 
 namespace UsingIdentityWithApi.Data
 {
-    public class UsingIdentityWithApiContext : DbContext, IUsingIdentityWithApiContext
+    public class UsingIdentityWithApiContext : IdentityDbContext<IdentityUser, IdentityRole<string>, string>, IUsingIdentityWithApiContext
     {
         public UsingIdentityWithApiContext(DbContextOptions<UsingIdentityWithApiContext> options) : base(options)
         {
 
         }
         public DbSet<ApiUser> XUsers { get; set; }
+        //public DbSet<IdentityUser> User { get => this.Users; }
 
         public async Task<Result> SaveChangesWithValidation(CancellationToken cancellationToken = default)
         {
