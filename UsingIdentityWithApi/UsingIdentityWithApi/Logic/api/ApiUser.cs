@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace UsingIdentityWithApi.Logic
+namespace UsingIdentityWithApi.Logic.api
 {
-    public class AspUser : IdentityUser<string>
+    public class ApiUser : IdentityUser<string>
     {
         public string Locale { get; set; } = "ar-EG";
     }

@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
-using UsingIdentityWithApi.Logic;
+using UsingIdentityWithApi.Logic.api;
 
 namespace UsingIdentityWithApi.Application
 {

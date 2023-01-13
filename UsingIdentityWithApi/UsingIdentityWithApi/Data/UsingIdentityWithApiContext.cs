@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using UsingIdentityWithApi.Application;
-using UsingIdentityWithApi.Logic;
+using UsingIdentityWithApi.Logic.api;
+using UsingIdentityWithApi.Logic.asp;
 
 namespace UsingIdentityWithApi.Data
 {

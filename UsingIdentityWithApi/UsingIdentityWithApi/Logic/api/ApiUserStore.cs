@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using UsingIdentityWithApi.Application;
 
-namespace UsingIdentityWithApi.Logic
+namespace UsingIdentityWithApi.Logic.api
 {
     public class ApiUserStore : IUserStore<ApiUser>, IUserPasswordStore<ApiUser>
     {

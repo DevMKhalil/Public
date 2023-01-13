@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -7,23 +6,26 @@ using System.Data;
 using System.Security.Claims;
 using UsingIdentityWithApi.Application.Users.Query.Login;
 using UsingIdentityWithApi.Application.Users.Query.Register;
-using UsingIdentityWithApi.Logic;
+using UsingIdentityWithApi.Logic.api;
 
 namespace UsingIdentityWithApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class ApiUsersController : ControllerBase
     {
         private readonly ApiUserManager _userManager;
-        private readonly Microsoft.AspNetCore.Identity.UserManager<AspUser> _aspUserManager;
         readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IUserClaimsPrincipalFactory<ApiUser> _claimsPrincipalFactory;
 
-        public UsersController(ApiUserManager userManager, IHttpContextAccessor httpContextAccessor, Microsoft.AspNetCore.Identity.UserManager<AspUser> aspUserManager)
+        public ApiUsersController(
+            ApiUserManager userManager,
+            IHttpContextAccessor httpContextAccessor,
+            IUserClaimsPrincipalFactory<ApiUser> claimsPrincipalFactory)
         {
             _userManager = userManager;
             _httpContextAccessor = httpContextAccessor;
-            _aspUserManager = aspUserManager;
+            _claimsPrincipalFactory = claimsPrincipalFactory;
         }
 
         [Authorize]
@@ -65,37 +67,6 @@ namespace UsingIdentityWithApi.Controllers
         }
 
 
-
-        [HttpPost("AspRegister")]
-        public async Task<IActionResult> AspRegister([FromBody] RegisterUserDto userDto)
-        {
-            if (ModelState.IsValid)
-            {
-                var user = await _aspUserManager.FindByNameAsync(userDto.UserName);
-
-                if (user is null)
-                {
-                    user = new AspUser
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        UserName = userDto.UserName,
-                    };
-
-                    var res = await _aspUserManager.CreateAsync(user, userDto.Password);
-
-                    if (res.Succeeded)
-                        return Ok();
-                    else
-                        return BadRequest(res.Errors);
-                }
-
-                return Ok();
-            }
-
-            return BadRequest();
-        }
-
-
         [HttpGet("Login")]
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Login([FromQuery]LoginUserDto loginDto)
@@ -106,11 +77,9 @@ namespace UsingIdentityWithApi.Controllers
 
                 if (user is not null && await _userManager.CheckPasswordAsync(user,loginDto.Password))
                 {
-                    var identity = new ClaimsIdentity("cookies");
-                    identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id));
-                    identity.AddClaim(new Claim(ClaimTypes.Name, user.UserName));
+                    var principal = await _claimsPrincipalFactory.CreateAsync(user);
 
-                    await _httpContextAccessor.HttpContext.SignInAsync("cookies", new ClaimsPrincipal(identity));
+                    await _httpContextAccessor.HttpContext.SignInAsync("Identity.Application", new ClaimsPrincipal(principal));
 
                     return Ok();
                 }

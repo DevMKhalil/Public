@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using UsingIdentityWithApi.Logic;
+using UsingIdentityWithApi.Logic.api;
 
 namespace UsingIdentityWithApi.Data.EFConfigration
 {

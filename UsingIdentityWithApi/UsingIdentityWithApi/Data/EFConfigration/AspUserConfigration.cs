@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using UsingIdentityWithApi.Logic;
+using UsingIdentityWithApi.Logic.asp;
 
 namespace UsingIdentityWithApi.Data.EFConfigration
 {
