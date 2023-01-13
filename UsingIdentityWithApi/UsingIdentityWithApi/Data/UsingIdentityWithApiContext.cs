@@ -8,7 +8,7 @@ using UsingIdentityWithApi.Logic;
 
 namespace UsingIdentityWithApi.Data
 {
-    public class UsingIdentityWithApiContext : IdentityDbContext<IdentityUser, IdentityRole<string>, string>, IUsingIdentityWithApiContext
+    public class UsingIdentityWithApiContext : IdentityDbContext<AspUser, IdentityRole<string>, string>, IUsingIdentityWithApiContext
     {
         public UsingIdentityWithApiContext(DbContextOptions<UsingIdentityWithApiContext> options) : base(options)
         {

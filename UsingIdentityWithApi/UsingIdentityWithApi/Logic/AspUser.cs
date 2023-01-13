@@ -2,7 +2,7 @@
 
 namespace UsingIdentityWithApi.Logic
 {
-    public class ApiUser : IdentityUser<string>
+    public class AspUser : IdentityUser<string>
     {
         public string Locale { get; set; } = "ar-EG";
     }

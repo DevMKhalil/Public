@@ -15,6 +15,7 @@ CREATE TABLE [dbo].[AspNetUsers](
 	[LockoutEnd] [datetimeoffset](7) NULL,
 	[LockoutEnabled] [bit] NOT NULL,
 	[AccessFailedCount] [int] NOT NULL,
+	[Locale] [nvarchar] (50) NULL,
  CONSTRAINT [PK_AspNetUsers] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
@@ -39,6 +40,7 @@ CREATE TABLE [dbo].[ApiUsers](
 	[LockoutEnd] [datetimeoffset](7) NULL,
 	[LockoutEnabled] [bit] NOT NULL,
 	[AccessFailedCount] [int] NOT NULL,
+	[Locale] [nvarchar] (50) NULL,
  CONSTRAINT [PK_ApiUsers] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

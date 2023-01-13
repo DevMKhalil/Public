@@ -11,12 +11,7 @@ namespace UsingIdentityWithApi.Data.EFConfigration
             builder.ToTable("ApiUsers");
             builder.Property(p => p.Id).HasColumnName("Id");
             builder.HasKey(p => p.Id);
-
-            //builder.Property(p => p.Id).IsRequired();
-            //builder.Property(p => p.Id).HasMaxLength(450);
-            //builder.Property(p => p.UserName).HasMaxLength(256);
-            //builder.Property(p => p.NormalizedUserName).HasMaxLength(256);
-            //builder.Property(p => p.PasswordHash);
+            builder.HasIndex(p => p.Locale).IsUnique(false);
         }
     }
 }

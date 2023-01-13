@@ -16,10 +16,10 @@ namespace UsingIdentityWithApi.Controllers
     public class UsersController : ControllerBase
     {
         private readonly ApiUserManager _userManager;
-        private readonly Microsoft.AspNetCore.Identity.UserManager<IdentityUser> _aspUserManager;
+        private readonly Microsoft.AspNetCore.Identity.UserManager<AspUser> _aspUserManager;
         readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UsersController(ApiUserManager userManager, IHttpContextAccessor httpContextAccessor, Microsoft.AspNetCore.Identity.UserManager<IdentityUser> aspUserManager)
+        public UsersController(ApiUserManager userManager, IHttpContextAccessor httpContextAccessor, Microsoft.AspNetCore.Identity.UserManager<AspUser> aspUserManager)
         {
             _userManager = userManager;
             _httpContextAccessor = httpContextAccessor;
@@ -75,7 +75,7 @@ namespace UsingIdentityWithApi.Controllers
 
                 if (user is null)
                 {
-                    user = new IdentityUser
+                    user = new AspUser
                     {
                         Id = Guid.NewGuid().ToString(),
                         UserName = userDto.UserName,

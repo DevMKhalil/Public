@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using UsingIdentityWithApi.Application;
 using UsingIdentityWithApi.Data;
 using UsingIdentityWithApi.Logic;
@@ -25,15 +27,25 @@ namespace UsingIdentityWithApi
 
         public static void AddIdentityForAspNetIdentityUser(this IServiceCollection services)
         {
-            services.AddIdentity<IdentityUser, IdentityRole>(options =>
+            //services.AddIdentity<AspUser, IdentityRole>(options =>
+            //{
+            //    options.Password.RequireDigit = false;
+            //    options.Password.RequireLowercase = false;
+            //    options.Password.RequireNonAlphanumeric = false;
+            //    options.Password.RequireUppercase = false;
+            //})
+            //.AddEntityFrameworkStores<UsingIdentityWithApiContext>()
+            //.AddDefaultTokenProviders();
+
+            services.AddIdentityCore<AspUser>(options =>
             {
                 options.Password.RequireDigit = false;
                 options.Password.RequireLowercase = false;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
-            })
-            .AddEntityFrameworkStores<UsingIdentityWithApiContext>()
-            .AddDefaultTokenProviders();
+            });
+
+            services.AddScoped<IUserStore<AspUser>, UserOnlyStore<AspUser, UsingIdentityWithApiContext>>();
         }
 
         public static void AddContext(this IServiceCollection services, string connectionString)
