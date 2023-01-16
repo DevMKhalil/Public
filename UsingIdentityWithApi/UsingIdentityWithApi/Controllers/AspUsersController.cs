@@ -2,8 +2,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using System.Data;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
 using UsingIdentityWithApi.Application.Users.Query.Login;
 using UsingIdentityWithApi.Application.Users.Query.Register;
 using UsingIdentityWithApi.Logic.api;
@@ -18,15 +21,18 @@ namespace UsingIdentityWithApi.Controllers
         private readonly UserManager<AspUser> _aspUserManager;
         readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUserClaimsPrincipalFactory<AspUser> _claimsPrincipalFactory;
+        private readonly IConfiguration _configuration;
 
         public AspUsersController(
             IHttpContextAccessor httpContextAccessor,
             UserManager<AspUser> aspUserManager,
-            IUserClaimsPrincipalFactory<AspUser> claimsPrincipalFactory)
+            IUserClaimsPrincipalFactory<AspUser> claimsPrincipalFactory,
+            IConfiguration configuration)
         {
             _httpContextAccessor = httpContextAccessor;
             _aspUserManager = aspUserManager;
             _claimsPrincipalFactory = claimsPrincipalFactory;
+            _configuration = configuration;
         }
 
         [Authorize]
@@ -50,6 +56,7 @@ namespace UsingIdentityWithApi.Controllers
                     {
                         Id = Guid.NewGuid().ToString(),
                         UserName = userDto.UserName,
+                        Email = userDto.Email
                     };
 
                     var res = await _aspUserManager.CreateAsync(user, userDto.Password);
@@ -77,17 +84,34 @@ namespace UsingIdentityWithApi.Controllers
 
                 if (user is not null && await _aspUserManager.CheckPasswordAsync(user,loginDto.Password))
                 {
-                    var principal = await _claimsPrincipalFactory.CreateAsync(user);
+                    var token = await GenerateJwtToken(user);
 
-                    await _httpContextAccessor.HttpContext.SignInAsync("Identity.Application", new ClaimsPrincipal(principal));
-
-                    return Ok();
+                    return Ok(token);
                 }
 
                 return BadRequest("Invalid UserName Or Password");
             }
 
             return BadRequest();
+        }
+
+
+        private async Task<string> GenerateJwtToken(AspUser user)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var principal = await _claimsPrincipalFactory.CreateAsync(user);
+
+            var claims = principal.Claims;
+
+            var token = new JwtSecurityToken(issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(15),
+                signingCredentials: credentials);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }

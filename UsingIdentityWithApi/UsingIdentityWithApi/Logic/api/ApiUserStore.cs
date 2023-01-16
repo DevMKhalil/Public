@@ -4,7 +4,7 @@ using UsingIdentityWithApi.Application;
 
 namespace UsingIdentityWithApi.Logic.api
 {
-    public class ApiUserStore : IUserStore<ApiUser>, IUserPasswordStore<ApiUser>
+    public class ApiUserStore : IUserStore<ApiUser>, IUserPasswordStore<ApiUser>, IUserEmailStore<ApiUser>
     {
         private readonly IUsingIdentityWithApiContext _context;
 
@@ -36,6 +36,11 @@ namespace UsingIdentityWithApi.Logic.api
         {
         }
 
+        public async Task<ApiUser> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)
+        {
+            return await _context.XUsers.FirstOrDefaultAsync(x => x.NormalizedEmail == normalizedEmail);
+        }
+
         public async Task<ApiUser> FindByIdAsync(string userId, CancellationToken cancellationToken)
         {
             return await _context.XUsers.FirstOrDefaultAsync(x => x.Id == userId);
@@ -44,6 +49,21 @@ namespace UsingIdentityWithApi.Logic.api
         public async Task<ApiUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
         {
             return await _context.XUsers.FirstOrDefaultAsync(x => x.NormalizedUserName == normalizedUserName);
+        }
+
+        public Task<string> GetEmailAsync(ApiUser user, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(user.Email);
+        }
+
+        public Task<bool> GetEmailConfirmedAsync(ApiUser user, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(user.EmailConfirmed);
+        }
+
+        public Task<string> GetNormalizedEmailAsync(ApiUser user, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(user.NormalizedEmail);
         }
 
         public Task<string> GetNormalizedUserNameAsync(ApiUser user, CancellationToken cancellationToken)
@@ -69,6 +89,24 @@ namespace UsingIdentityWithApi.Logic.api
         public Task<bool> HasPasswordAsync(ApiUser user, CancellationToken cancellationToken)
         {
             return Task.FromResult(user.PasswordHash != null);
+        }
+
+        public Task SetEmailAsync(ApiUser user, string email, CancellationToken cancellationToken)
+        {
+            user.Email = email;
+            return Task.CompletedTask;
+        }
+
+        public Task SetEmailConfirmedAsync(ApiUser user, bool confirmed, CancellationToken cancellationToken)
+        {
+            user.EmailConfirmed = confirmed;
+            return Task.CompletedTask;
+        }
+
+        public Task SetNormalizedEmailAsync(ApiUser user, string normalizedEmail, CancellationToken cancellationToken)
+        {
+            user.NormalizedEmail = normalizedEmail;
+            return Task.CompletedTask;
         }
 
         public Task SetNormalizedUserNameAsync(ApiUser user, string normalizedName, CancellationToken cancellationToken)

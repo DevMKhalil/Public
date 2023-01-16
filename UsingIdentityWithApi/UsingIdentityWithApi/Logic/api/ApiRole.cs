@@ -2,7 +2,7 @@
 
 namespace UsingIdentityWithApi.Logic.api
 {
-    public class ApiRole : IdentityRole<string>
-    {
-    }
+    //public class ApiRole : IdentityRole<string>
+    //{
+    //}
 }

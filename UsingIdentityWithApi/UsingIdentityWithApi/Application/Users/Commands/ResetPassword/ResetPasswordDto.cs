@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace UsingIdentityWithApi.Application.Users.Query.Register
+namespace UsingIdentityWithApi.Application.Users.Commands.ResetPassword
 {
-    public class RegisterUserDto
+    public class ResetPasswordDto
     {
-        public string UserName { get; set; }
+        public string Token { get; set; }
+        public string Email { get; set; }
         [DataType(DataType.Password)]
         public string Password { get; set; }
         [Compare("Password")]

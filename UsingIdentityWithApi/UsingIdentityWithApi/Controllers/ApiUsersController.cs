@@ -2,11 +2,16 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using System.Data;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
 using UsingIdentityWithApi.Application.Users.Query.Login;
-using UsingIdentityWithApi.Application.Users.Query.Register;
+using UsingIdentityWithApi.Application.Users.Commands.Register;
 using UsingIdentityWithApi.Logic.api;
+using UsingIdentityWithApi.Application.Users.Query.ForgetPassword;
+using UsingIdentityWithApi.Application.Users.Commands.ResetPassword;
 
 namespace UsingIdentityWithApi.Controllers
 {
@@ -17,15 +22,18 @@ namespace UsingIdentityWithApi.Controllers
         private readonly ApiUserManager _userManager;
         readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUserClaimsPrincipalFactory<ApiUser> _claimsPrincipalFactory;
+        private readonly IConfiguration _configuration;
 
         public ApiUsersController(
             ApiUserManager userManager,
             IHttpContextAccessor httpContextAccessor,
-            IUserClaimsPrincipalFactory<ApiUser> claimsPrincipalFactory)
+            IUserClaimsPrincipalFactory<ApiUser> claimsPrincipalFactory,
+            IConfiguration configuration)
         {
             _userManager = userManager;
             _httpContextAccessor = httpContextAccessor;
             _claimsPrincipalFactory = claimsPrincipalFactory;
+            _configuration = configuration;
         }
 
         [Authorize]
@@ -50,6 +58,7 @@ namespace UsingIdentityWithApi.Controllers
                     {
                         Id = Guid.NewGuid().ToString(),
                         UserName = userDto.UserName,
+                        Email = userDto.Email
                     };
 
                     var res = await _userManager.CreateAsync(user, userDto.Password);
@@ -59,35 +68,66 @@ namespace UsingIdentityWithApi.Controllers
                     else
                         return BadRequest(res.Errors);
                 }
-    
+
                 return Ok();
             }
-    
+
             return BadRequest();
         }
 
 
         [HttpGet("Login")]
         //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login([FromQuery]LoginUserDto loginDto)
+        public async Task<ActionResult<string>> Login([FromQuery] LoginUserDto loginDto)
         {
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByNameAsync(loginDto.UserName);
 
-                if (user is not null && await _userManager.CheckPasswordAsync(user,loginDto.Password))
+                if (user is not null && await _userManager.CheckPasswordAsync(user, loginDto.Password))
                 {
-                    var principal = await _claimsPrincipalFactory.CreateAsync(user);
+                    var token = await GenerateJwtToken(user);
 
-                    await _httpContextAccessor.HttpContext.SignInAsync("Identity.Application", new ClaimsPrincipal(principal));
-
-                    return Ok();
+                    return Ok(token);
                 }
 
                 return BadRequest("Invalid UserName Or Password");
             }
 
             return BadRequest();
+        }
+
+
+        private async Task<string> GenerateJwtToken(ApiUser user)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var principal = await _claimsPrincipalFactory.CreateAsync(user);
+
+            var claims = principal.Claims;
+
+            var token = new JwtSecurityToken(issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(15),
+                signingCredentials: credentials);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+
+        [HttpPost("ForgetPassword")]
+        public async Task<IActionResult> ForgetPassword([FromQuery] ForgetPasswordDto forgetPassword)
+        {
+
+        }
+
+
+        [HttpPost("ResetPassword")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto forgetPassword)
+        {
+
         }
     }
 }

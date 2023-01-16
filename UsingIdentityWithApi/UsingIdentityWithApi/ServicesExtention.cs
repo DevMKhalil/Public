@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using UsingIdentityWithApi.Application;
 using UsingIdentityWithApi.Data;
 using UsingIdentityWithApi.Logic.api;
@@ -14,31 +17,25 @@ namespace UsingIdentityWithApi
     {
         public static void AddIdentityForIdentityUser(this IServiceCollection services)
         {
-            //services.AddIdentityCore<ApiUser>(options =>
-            //{
-            //    options.Password.RequireDigit = false;
-            //    options.Password.RequireLowercase = false;
-            //    options.Password.RequireNonAlphanumeric = false;
-            //    options.Password.RequireUppercase = false;
-            //});
-
-            //services.AddScoped<IUserStore<ApiUser>, ApiUserStore>();
-            //services.AddScoped<ApiUserManager>();
-
-            services.AddIdentity<ApiUser, ApiRole>(options =>
+            services.AddIdentityCore<ApiUser>(options =>
             {
                 options.Password.RequireDigit = false;
                 options.Password.RequireLowercase = false;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
             })
-            .AddEntityFrameworkStores<UsingIdentityWithApiContext>()
+            //.AddEntityFrameworkStores<UsingIdentityWithApiContext>()
             .AddDefaultTokenProviders();
+
+            services.AddScoped<IUserStore<ApiUser>, ApiUserStore>();
+            services.AddScoped<ApiUserManager>();
+
+            services.AddScoped<IUserClaimsPrincipalFactory<ApiUser>, ApiUserClaimsPrincipalFactory>();
         }
 
         public static void AddIdentityForAspNetIdentityUser(this IServiceCollection services)
         {
-            services.AddIdentity<AspUser, IdentityRole>(options =>
+            services.AddIdentity<AspUser, IdentityRole<string>>(options =>
             {
                 options.Password.RequireDigit = false;
                 options.Password.RequireLowercase = false;
@@ -48,15 +45,7 @@ namespace UsingIdentityWithApi
             .AddEntityFrameworkStores<UsingIdentityWithApiContext>()
             .AddDefaultTokenProviders();
 
-            //services.AddIdentityCore<AspUser>(options =>
-            //{
-            //    options.Password.RequireDigit = false;
-            //    options.Password.RequireLowercase = false;
-            //    options.Password.RequireNonAlphanumeric = false;
-            //    options.Password.RequireUppercase = false;
-            //});
-
-            //services.AddScoped<IUserStore<AspUser>, UserOnlyStore<AspUser, UsingIdentityWithApiContext>>();
+            services.AddScoped<IUserClaimsPrincipalFactory<AspUser>, AspUserClaimsPrincipalFactory>();
         }
 
         public static void AddContext(this IServiceCollection services, string connectionString)
@@ -78,6 +67,30 @@ namespace UsingIdentityWithApi
             });
 
             services.AddTransient<IUsingIdentityWithApiContext, UsingIdentityWithApiContext>();
+        }
+
+        public static void AddJwtBearerAuthentication(this IServiceCollection services, string validIssuer,string validAudience,string issuerSigningKey)
+        {
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(option =>
+            {
+                option.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = validIssuer,
+                    ValidAudience = validAudience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(issuerSigningKey))
+                };
+            });
+        }
+
+        public static void AddMesc(this IServiceCollection services)
+        {
+            services.Configure<DataProtectionTokenProviderOptions>(options =>
+            options.TokenLifespan = TimeSpan.FromHours(3));
         }
     }
 }

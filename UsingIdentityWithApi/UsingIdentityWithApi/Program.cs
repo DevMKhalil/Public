@@ -23,6 +23,12 @@ builder.Services.AddContext(builder.Configuration.GetValue<string>("DefaultConne
 builder.Services.AddIdentityForIdentityUser();
 builder.Services.AddIdentityForAspNetIdentityUser();
 
+// Add Mesc
+builder.Services.AddMesc();
+
+// Add Jwt Services
+builder.Services.AddJwtBearerAuthentication(builder.Configuration["Jwt:Issuer"], builder.Configuration["Jwt:Audience"], builder.Configuration["Jwt:Key"]);
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
