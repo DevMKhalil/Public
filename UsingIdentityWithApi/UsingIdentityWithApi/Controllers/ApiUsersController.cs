@@ -120,14 +120,48 @@ namespace UsingIdentityWithApi.Controllers
         [HttpPost("ForgetPassword")]
         public async Task<IActionResult> ForgetPassword([FromQuery] ForgetPasswordDto forgetPassword)
         {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(forgetPassword.Email);
 
+                if (user is not null)
+                {
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+                    var resetURL = Url.Action("ResetPassword", "AspUsers", new { token = token, email = user.Email }, Request.Scheme);
+
+                    System.IO.File.WriteAllText("D:\\resetLink.txt", resetURL);
+                }
+                else
+                {
+                    // email User and inform them that they do not have an account
+                }
+            }
+
+            return Ok();
         }
 
 
         [HttpPost("ResetPassword")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto forgetPassword)
         {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(forgetPassword.Email);
 
+                if (user is not null)
+                {
+                    var result = await _userManager.ResetPasswordAsync(user, forgetPassword.Token, forgetPassword.Password);
+
+                    if (!result.Succeeded)
+                    {
+                        return BadRequest(result.Errors);
+                    }
+                    return Ok();
+                }
+                return BadRequest("User Not Found");
+            }
+            return BadRequest();
         }
     }
 }

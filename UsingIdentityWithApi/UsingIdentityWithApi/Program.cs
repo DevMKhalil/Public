@@ -24,7 +24,7 @@ builder.Services.AddIdentityForIdentityUser();
 builder.Services.AddIdentityForAspNetIdentityUser();
 
 // Add Mesc
-builder.Services.AddMesc();
+builder.Services.AddMisc();
 
 // Add Jwt Services
 builder.Services.AddJwtBearerAuthentication(builder.Configuration["Jwt:Issuer"], builder.Configuration["Jwt:Audience"], builder.Configuration["Jwt:Key"]);

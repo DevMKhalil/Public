@@ -4,7 +4,7 @@ using UsingIdentityWithApi.Application;
 
 namespace UsingIdentityWithApi.Logic.api
 {
-    public class ApiUserStore : IUserStore<ApiUser>, IUserPasswordStore<ApiUser>, IUserEmailStore<ApiUser>
+    public class ApiUserStore : IUserStore<ApiUser>, IUserPasswordStore<ApiUser>, IUserEmailStore<ApiUser>, IUserSecurityStampStore<ApiUser>
     {
         private readonly IUsingIdentityWithApiContext _context;
 
@@ -76,6 +76,11 @@ namespace UsingIdentityWithApi.Logic.api
             return Task.FromResult(user.PasswordHash);
         }
 
+        public Task<string> GetSecurityStampAsync(ApiUser user, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(user.SecurityStamp);
+        }
+
         public Task<string> GetUserIdAsync(ApiUser user, CancellationToken cancellationToken)
         {
             return Task.FromResult(user.Id);
@@ -118,6 +123,12 @@ namespace UsingIdentityWithApi.Logic.api
         public Task SetPasswordHashAsync(ApiUser user, string passwordHash, CancellationToken cancellationToken)
         {
             user.PasswordHash = passwordHash;
+            return Task.CompletedTask;
+        }
+
+        public Task SetSecurityStampAsync(ApiUser user, string stamp, CancellationToken cancellationToken)
+        {
+            user.SecurityStamp = stamp;
             return Task.CompletedTask;
         }
 

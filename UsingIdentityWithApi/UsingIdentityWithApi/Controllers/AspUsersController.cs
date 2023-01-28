@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using CSharpFunctionalExtensions;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -7,8 +8,10 @@ using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using UsingIdentityWithApi.Application.Users.Commands.Register;
+using UsingIdentityWithApi.Application.Users.Commands.ResetPassword;
+using UsingIdentityWithApi.Application.Users.Query.ForgetPassword;
 using UsingIdentityWithApi.Application.Users.Query.Login;
-using UsingIdentityWithApi.Application.Users.Query.Register;
 using UsingIdentityWithApi.Logic.api;
 using UsingIdentityWithApi.Logic.asp;
 
@@ -112,6 +115,54 @@ namespace UsingIdentityWithApi.Controllers
                 signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+
+        [HttpPost("ForgetPassword")]
+        public async Task<IActionResult> ForgetPassword([FromQuery] ForgetPasswordDto forgetPassword)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _aspUserManager.FindByEmailAsync(forgetPassword.Email);
+
+                if (user is not null)
+                {
+                    var token = await _aspUserManager.GeneratePasswordResetTokenAsync(user);
+
+                    var resetURL = Url.Action("ResetPassword", "AspUsers", new { token = token, email = user.Email}, Request.Scheme);
+
+                    System.IO.File.WriteAllText("D:\\resetLink.txt", resetURL);
+                }
+                else
+                {
+                    // email User and inform them that they do not have an account
+                }
+            }
+
+            return Ok();
+        }
+
+
+        [HttpPost("ResetPassword")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto forgetPassword)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _aspUserManager.FindByEmailAsync(forgetPassword.Email);
+
+                if (user is not null)
+                {
+                    var result = await _aspUserManager.ResetPasswordAsync(user,forgetPassword.Token,forgetPassword.Password);
+
+                    if (!result.Succeeded)
+                    {
+                        return BadRequest(result.Errors);
+                    }
+                    return Ok();
+                }
+                return BadRequest("User Not Found");
+            }
+            return BadRequest();
         }
     }
 }

@@ -23,9 +23,11 @@ namespace UsingIdentityWithApi
                 options.Password.RequireLowercase = false;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
+                options.Tokens.PasswordResetTokenProvider = "CustomeProvider";
             })
-            //.AddEntityFrameworkStores<UsingIdentityWithApiContext>()
-            .AddDefaultTokenProviders();
+            .AddDefaultTokenProviders()
+            .AddTokenProvider<CustomTokenProvider<ApiUser>>("CustomeProvider")
+            ;
 
             services.AddScoped<IUserStore<ApiUser>, ApiUserStore>();
             services.AddScoped<ApiUserManager>();
@@ -87,7 +89,7 @@ namespace UsingIdentityWithApi
             });
         }
 
-        public static void AddMesc(this IServiceCollection services)
+        public static void AddMisc(this IServiceCollection services)
         {
             services.Configure<DataProtectionTokenProviderOptions>(options =>
             options.TokenLifespan = TimeSpan.FromHours(3));
