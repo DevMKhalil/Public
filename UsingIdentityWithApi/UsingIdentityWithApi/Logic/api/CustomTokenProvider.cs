@@ -8,7 +8,7 @@ namespace UsingIdentityWithApi.Logic.api
     public class CustomTokenProvider<TUser> : DataProtectorTokenProvider<TUser> where TUser : class
     {
         public CustomTokenProvider(IDataProtectionProvider dataProtectionProvider,
-            IOptions<PasswordResetTokenProviderOptions> options,
+            IOptions<CustomTokenProviderOptions> options,
             ILogger<DataProtectorTokenProvider<TUser>> logger)
             : base(dataProtectionProvider, options, logger)
         {
@@ -16,9 +16,9 @@ namespace UsingIdentityWithApi.Logic.api
         }
     }
 
-    public class PasswordResetTokenProviderOptions : DataProtectionTokenProviderOptions
+    public class CustomTokenProviderOptions : DataProtectionTokenProviderOptions
     {
-        public PasswordResetTokenProviderOptions()
+        public CustomTokenProviderOptions()
         {
             Name = "PasswordResetTokenProvider";
             TokenLifespan = TimeSpan.FromHours(3);
