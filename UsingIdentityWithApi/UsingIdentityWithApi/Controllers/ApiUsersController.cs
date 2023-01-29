@@ -44,6 +44,26 @@ namespace UsingIdentityWithApi.Controllers
         }
 
 
+        [HttpGet("GenerateEmailConfirmationToken")]
+        public async Task<IActionResult> GenerateEmailConfirmationToken(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user is not null)
+            {
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+                var resetURL = Url.Action("ConfirmEmailAddress", "ApiUsers",
+                    new { token = token, email = user.Email }, Request.Scheme);
+
+                System.IO.File.WriteAllText("D:\\EmailConfirmationLink.txt", resetURL);
+
+                return Ok();
+            }
+            return BadRequest("User Not Found");
+        }
+
+
         [HttpPost("Register")]
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Register([FromBody] RegisterUserDto userDto)
@@ -64,7 +84,16 @@ namespace UsingIdentityWithApi.Controllers
                     var res = await _userManager.CreateAsync(user, userDto.Password);
 
                     if (res.Succeeded)
+                    {
+                        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+                        var resetURL = Url.Action("ConfirmEmailAddress", "ApiUsers",
+                            new { token = token, email = user.Email }, Request.Scheme);
+
+                        System.IO.File.WriteAllText("D:\\EmailConfirmationLink.txt", resetURL);
+
                         return Ok();
+                    }
                     else
                         return BadRequest(res.Errors);
                 }
@@ -73,6 +102,24 @@ namespace UsingIdentityWithApi.Controllers
             }
 
             return BadRequest();
+        }
+
+
+        [HttpGet("ConfirmEmailAddress")]
+        public async Task<IActionResult> ConfirmEmailAddress(string token,string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user is not null)
+            {
+                var result = await _userManager.ConfirmEmailAsync(user, token);
+
+                if (result.Succeeded)
+                    return Ok();
+                else
+                    return BadRequest(result.Errors);
+            }
+            return BadRequest("User Not Found");
         }
 
 
@@ -86,6 +133,9 @@ namespace UsingIdentityWithApi.Controllers
 
                 if (user is not null && await _userManager.CheckPasswordAsync(user, loginDto.Password))
                 {
+                    if (!await _userManager.IsEmailConfirmedAsync(user))
+                        return BadRequest("Email is not confirmed");
+
                     var token = await GenerateJwtToken(user);
 
                     return Ok(token);

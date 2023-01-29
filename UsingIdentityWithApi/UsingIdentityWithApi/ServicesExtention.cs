@@ -23,10 +23,19 @@ namespace UsingIdentityWithApi
                 options.Password.RequireLowercase = false;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
+
+                options.SignIn.RequireConfirmedEmail = true;
+
                 options.Tokens.PasswordResetTokenProvider = "CustomeProvider";
+                options.Tokens.EmailConfirmationTokenProvider = "ApiCustomEmailConfirmationTokenProvider";
             })
             .AddDefaultTokenProviders()
+            //.AddTokenProvider<CustomDataProtectionTokenProvider<ApiUser>>("ApiCustomeProvider")
+            //.AddTokenProvider<EmailTokenProvider<ApiUser>>(TokenOptions.DefaultEmailProvider)
+            //.AddTokenProvider<PhoneNumberTokenProvider<ApiUser>>(TokenOptions.DefaultPhoneProvider)
+            //.AddTokenProvider<AuthenticatorTokenProvider<ApiUser>>(TokenOptions.DefaultAuthenticatorProvider)
             .AddTokenProvider<CustomTokenProvider<ApiUser>>("CustomeProvider")
+            .AddTokenProvider<CustomApiEmailConfirmationTokenProvider<ApiUser>>("ApiCustomEmailConfirmationTokenProvider")
             ;
 
             services.AddScoped<IUserStore<ApiUser>, ApiUserStore>();
@@ -43,9 +52,15 @@ namespace UsingIdentityWithApi
                 options.Password.RequireLowercase = false;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
+
+                options.SignIn.RequireConfirmedEmail = true;
+
+                options.Tokens.EmailConfirmationTokenProvider = "CustomAspEmailConfirmationTokenProvider";
             })
             .AddEntityFrameworkStores<UsingIdentityWithApiContext>()
-            .AddDefaultTokenProviders();
+            .AddDefaultTokenProviders()
+            .AddTokenProvider<CustomAspEmailConfirmationTokenProvider<AspUser>>("CustomAspEmailConfirmationTokenProvider")
+            ;
 
             services.AddScoped<IUserClaimsPrincipalFactory<AspUser>, AspUserClaimsPrincipalFactory>();
         }
@@ -93,6 +108,12 @@ namespace UsingIdentityWithApi
         {
             services.Configure<DataProtectionTokenProviderOptions>(options =>
             options.TokenLifespan = TimeSpan.FromHours(3));
+
+            services.Configure<CustomApiEmailConfirmationTokenProviderOptions>(options =>
+            options.TokenLifespan = TimeSpan.FromDays(3));
+
+            services.Configure<CustomAspEmailConfirmationTokenProviderOptions>(options =>
+            options.TokenLifespan = TimeSpan.FromDays(3));
         }
     }
 }

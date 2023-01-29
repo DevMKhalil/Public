@@ -20,7 +20,10 @@ namespace UsingIdentityWithApi.Logic.api
         /// <param name="logger">The logger used to log messages, warnings and errors.</param>
         public ApiUserManager(IUserStore<ApiUser> store, IOptions<IdentityOptions> optionsAccessor, IPasswordHasher<ApiUser> passwordHasher, IEnumerable<IUserValidator<ApiUser>> userValidators, IEnumerable<IPasswordValidator<ApiUser>> passwordValidators, ILookupNormalizer keyNormalizer, IdentityErrorDescriber errors, IServiceProvider services, ILogger<UserManager<ApiUser>> logger) : base(store, optionsAccessor, passwordHasher, userValidators, passwordValidators, keyNormalizer, errors, services, logger)
         {
-
+            //RegisterTokenProvider(TokenOptions.DefaultProvider, new CustomDataProtectionTokenProvider<ApiUser>());
+            //RegisterTokenProvider(TokenOptions.DefaultEmailProvider, new EmailTokenProvider<ApiUser>());
+            //RegisterTokenProvider(TokenOptions.DefaultPhoneProvider, new PhoneNumberTokenProvider<ApiUser>());
+            //RegisterTokenProvider(TokenOptions.DefaultAuthenticatorProvider, new AuthenticatorTokenProvider<ApiUser>());
         }
     }
 }
