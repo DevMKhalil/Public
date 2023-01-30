@@ -28,8 +28,9 @@ namespace UsingIdentityWithApi
 
                 options.Tokens.PasswordResetTokenProvider = "CustomeProvider";
                 options.Tokens.EmailConfirmationTokenProvider = "ApiCustomEmailConfirmationTokenProvider";
+
             })
-            .AddDefaultTokenProviders()
+            //.AddDefaultTokenProviders()
             //.AddTokenProvider<CustomDataProtectionTokenProvider<ApiUser>>("ApiCustomeProvider")
             //.AddTokenProvider<EmailTokenProvider<ApiUser>>(TokenOptions.DefaultEmailProvider)
             //.AddTokenProvider<PhoneNumberTokenProvider<ApiUser>>(TokenOptions.DefaultPhoneProvider)
@@ -39,6 +40,7 @@ namespace UsingIdentityWithApi
             ;
 
             services.AddScoped<IUserStore<ApiUser>, ApiUserStore>();
+            services.AddScoped<IUserTwoFactorTokenProvider<ApiUser>, CustomApiEmailConfirmationTokenProvider<ApiUser>>();
             services.AddScoped<ApiUserManager>();
 
             services.AddScoped<IUserClaimsPrincipalFactory<ApiUser>, ApiUserClaimsPrincipalFactory>();
@@ -86,7 +88,7 @@ namespace UsingIdentityWithApi
             services.AddTransient<IUsingIdentityWithApiContext, UsingIdentityWithApiContext>();
         }
 
-        public static void AddJwtBearerAuthentication(this IServiceCollection services, string validIssuer,string validAudience,string issuerSigningKey)
+        public static void AddJwtBearerAuthentication(this IServiceCollection services, string validIssuer, string validAudience, string issuerSigningKey)
         {
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(option =>
