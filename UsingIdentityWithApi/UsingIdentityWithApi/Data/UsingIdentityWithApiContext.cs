@@ -16,7 +16,6 @@ namespace UsingIdentityWithApi.Data
 
         }
         public DbSet<ApiUser> XUsers { get; set; }
-        //public DbSet<IdentityUser> User { get => this.Users; }
 
         public async Task<Result> SaveChangesWithValidation(CancellationToken cancellationToken = default)
         {

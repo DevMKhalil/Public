@@ -60,7 +60,7 @@ namespace UsingIdentityWithApi.Controllers
 
                 System.IO.File.WriteAllText("D:\\EmailConfirmationLink.txt", resetURL);
 
-                return Ok();
+                return Ok(token);
             }
             return BadRequest("User Not Found");
         }

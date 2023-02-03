@@ -17,8 +17,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add Context Services
 builder.Services.AddContext(builder.Configuration.GetValue<string>("DefaultConnection"));
 
-//builder.Services.AddAuthentication("cookies").AddCookie("cookies", options => options.LoginPath = "/api/Users/Login");
-
 // Add Identity Services
 builder.Services.AddIdentityForIdentityUser();
 builder.Services.AddIdentityForAspNetIdentityUser();

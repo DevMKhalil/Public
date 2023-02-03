@@ -30,11 +30,6 @@ namespace UsingIdentityWithApi
                 options.Tokens.EmailConfirmationTokenProvider = "ApiCustomEmailConfirmationTokenProvider";
 
             })
-            //.AddDefaultTokenProviders()
-            //.AddTokenProvider<CustomDataProtectionTokenProvider<ApiUser>>("ApiCustomeProvider")
-            //.AddTokenProvider<EmailTokenProvider<ApiUser>>(TokenOptions.DefaultEmailProvider)
-            //.AddTokenProvider<PhoneNumberTokenProvider<ApiUser>>(TokenOptions.DefaultPhoneProvider)
-            //.AddTokenProvider<AuthenticatorTokenProvider<ApiUser>>(TokenOptions.DefaultAuthenticatorProvider)
             .AddTokenProvider<CustomTokenProvider<ApiUser>>("CustomeProvider")
             .AddTokenProvider<CustomApiEmailConfirmationTokenProvider<ApiUser>>("ApiCustomEmailConfirmationTokenProvider")
             ;
@@ -110,12 +105,6 @@ namespace UsingIdentityWithApi
         {
             services.Configure<DataProtectionTokenProviderOptions>(options =>
             options.TokenLifespan = TimeSpan.FromHours(3));
-
-            services.Configure<CustomApiEmailConfirmationTokenProviderOptions>(options =>
-            options.TokenLifespan = TimeSpan.FromDays(3));
-
-            services.Configure<CustomAspEmailConfirmationTokenProviderOptions>(options =>
-            options.TokenLifespan = TimeSpan.FromDays(3));
         }
     }
 }

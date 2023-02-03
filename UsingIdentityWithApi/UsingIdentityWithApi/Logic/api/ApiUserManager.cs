@@ -31,15 +31,12 @@ namespace UsingIdentityWithApi.Logic.api
                 logger)
         {
             _userTwoFactorTokenProvider = userTwoFactorTokenProvider;
-            //RegisterTokenProvider(TokenOptions.DefaultProvider, new CustomDataProtectionTokenProvider<ApiUser>());
-            //RegisterTokenProvider(TokenOptions.DefaultEmailProvider, new EmailTokenProvider<ApiUser>());
-            //RegisterTokenProvider(TokenOptions.DefaultPhoneProvider, new PhoneNumberTokenProvider<ApiUser>());
-            //RegisterTokenProvider(TokenOptions.DefaultAuthenticatorProvider, new AuthenticatorTokenProvider<ApiUser>());
         }
 
+        #region GenerateEmailConfirmationToken
         public override Task<string> GenerateEmailConfirmationTokenAsync(ApiUser user)
         {
-            return GenerateUserTokenAsync(user,string.Empty, "EmailConfirmation");
+            return GenerateUserTokenAsync(user, string.Empty, ConfirmEmailTokenPurpose);
         }
 
         public override Task<string> GenerateUserTokenAsync(ApiUser user, string tokenProvider, string purpose)
@@ -49,12 +46,68 @@ namespace UsingIdentityWithApi.Logic.api
             {
                 throw new ArgumentNullException(nameof(user));
             }
-            if (_userTwoFactorTokenProvider == null)
+            if (_userTwoFactorTokenProvider is null)
             {
                 throw new ArgumentNullException(nameof(tokenProvider));
             }
 
             return _userTwoFactorTokenProvider.GenerateAsync(purpose, this, user);
         }
+        #endregion
+
+        #region ConfirmEmail
+        public async override Task<IdentityResult> ConfirmEmailAsync(ApiUser user, string token)
+        {
+            ThrowIfDisposed();
+            var store = GetEmailStore();
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+
+            if (!await VerifyUserTokenAsync(user, Options.Tokens.EmailConfirmationTokenProvider, ConfirmEmailTokenPurpose, token))
+            {
+                return IdentityResult.Failed(ErrorDescriber.InvalidToken());
+            }
+            await store.SetEmailConfirmedAsync(user, true, CancellationToken);
+            return await UpdateUserAsync(user);
+        }
+
+        private IUserEmailStore<ApiUser> GetEmailStore(bool throwOnFail = true)
+        {
+            var cast = Store as IUserEmailStore<ApiUser>;
+            if (throwOnFail && cast == null)
+            {
+                throw new NotSupportedException("StoreNotIUserEmailStore");
+            }
+            return cast;
+        }
+
+        public override async Task<bool> VerifyUserTokenAsync(ApiUser user, string tokenProvider, string purpose, string token)
+        {
+            ThrowIfDisposed();
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+            if (tokenProvider == null)
+            {
+                throw new ArgumentNullException(nameof(tokenProvider));
+            }
+
+            if (_userTwoFactorTokenProvider is null)
+            {
+                throw new NotSupportedException($"No Supported Token Provider {tokenProvider} For User{nameof(ApiUser)} ");
+            }
+            // Make sure the token is valid
+            var result = await _userTwoFactorTokenProvider.ValidateAsync(purpose, token, this, user);
+
+            if (!result)
+            {
+                Logger.LogWarning("VerifyUserTokenFailed", "VerifyUserTokenAsync() failed with purpose: {purpose} for user.", purpose);
+            }
+            return result;
+        } 
+        #endregion
     }
 }
