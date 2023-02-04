@@ -9,6 +9,7 @@ using UsingIdentityWithApi.Application;
 using UsingIdentityWithApi.Data;
 using UsingIdentityWithApi.Logic.api;
 using UsingIdentityWithApi.Logic.asp;
+using UsingIdentityWithApi.Logic.Shared;
 using static CSharpFunctionalExtensions.Result;
 
 namespace UsingIdentityWithApi
@@ -23,6 +24,11 @@ namespace UsingIdentityWithApi
                 options.Password.RequireLowercase = false;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 3;
+                options.Password.RequiredUniqueChars = 0;
+
+                options.User.RequireUniqueEmail = true;
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._";
 
                 options.SignIn.RequireConfirmedEmail = true;
 
@@ -32,6 +38,7 @@ namespace UsingIdentityWithApi
             })
             .AddTokenProvider<CustomTokenProvider<ApiUser>>("CustomeProvider")
             .AddTokenProvider<CustomApiEmailConfirmationTokenProvider<ApiUser>>("ApiCustomEmailConfirmationTokenProvider")
+            .AddPasswordValidator<CustomePasswordValidator<ApiUser>>()
             ;
 
             services.AddScoped<IUserStore<ApiUser>, ApiUserStore>();
@@ -49,6 +56,11 @@ namespace UsingIdentityWithApi
                 options.Password.RequireLowercase = false;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 3;
+                options.Password.RequiredUniqueChars = 0;
+
+                options.User.RequireUniqueEmail = true;
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._";
 
                 options.SignIn.RequireConfirmedEmail = true;
 
@@ -57,6 +69,7 @@ namespace UsingIdentityWithApi
             .AddEntityFrameworkStores<UsingIdentityWithApiContext>()
             .AddDefaultTokenProviders()
             .AddTokenProvider<CustomAspEmailConfirmationTokenProvider<AspUser>>("CustomAspEmailConfirmationTokenProvider")
+            .AddPasswordValidator<CustomePasswordValidator<AspUser>>()
             ;
 
             services.AddScoped<IUserClaimsPrincipalFactory<AspUser>, AspUserClaimsPrincipalFactory>();

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 
-namespace UsingIdentityWithApi.Logic
+namespace UsingIdentityWithApi.Logic.api
 {
     //public class CustomIdentityUserStore :
     //    UserStoreBase<ApiUser, string, IdentityUserClaim<string>, IdentityUserLogin<string>, IdentityUserToken<string>>
