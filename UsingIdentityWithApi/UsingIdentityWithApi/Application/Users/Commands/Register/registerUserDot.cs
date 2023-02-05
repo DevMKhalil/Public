@@ -12,5 +12,7 @@ namespace UsingIdentityWithApi.Application.Users.Commands.Register
         public string ConfirmPassword { get; set; }
         [EmailAddress]
         public string Email { get; set; }
+        [Phone]
+        public string PhoneNumber { get; set; }
     }
 }

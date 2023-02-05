@@ -30,19 +30,24 @@ namespace UsingIdentityWithApi
                 options.User.RequireUniqueEmail = true;
                 options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._";
 
-                options.SignIn.RequireConfirmedEmail = true;
+                options.Lockout.AllowedForNewUsers = true;
+                options.Lockout.MaxFailedAccessAttempts = 3;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
 
-                options.Tokens.PasswordResetTokenProvider = "CustomeProvider";
+                options.SignIn.RequireConfirmedEmail = true;
+                options.SignIn.RequireConfirmedPhoneNumber = false;
+
+                options.Tokens.PasswordResetTokenProvider = "ApiCustomeResetPasswordTokenProvider";
                 options.Tokens.EmailConfirmationTokenProvider = "ApiCustomEmailConfirmationTokenProvider";
 
             })
-            .AddTokenProvider<CustomTokenProvider<ApiUser>>("CustomeProvider")
+            .AddTokenProvider<CustomApiPasswordResetTokenProvider<ApiUser>>("ApiCustomeResetPasswordTokenProvider")
             .AddTokenProvider<CustomApiEmailConfirmationTokenProvider<ApiUser>>("ApiCustomEmailConfirmationTokenProvider")
             .AddPasswordValidator<CustomePasswordValidator<ApiUser>>()
             ;
 
             services.AddScoped<IUserStore<ApiUser>, ApiUserStore>();
-            services.AddScoped<IUserTwoFactorTokenProvider<ApiUser>, CustomApiEmailConfirmationTokenProvider<ApiUser>>();
+            services.AddScoped<IUserTwoFactorTokenProvider<ApiUser>, CustomDataProtectionTokenProvider<ApiUser>>();
             services.AddScoped<ApiUserManager>();
 
             services.AddScoped<IUserClaimsPrincipalFactory<ApiUser>, ApiUserClaimsPrincipalFactory>();
@@ -62,12 +67,19 @@ namespace UsingIdentityWithApi
                 options.User.RequireUniqueEmail = true;
                 options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._";
 
-                options.SignIn.RequireConfirmedEmail = true;
+                options.Lockout.AllowedForNewUsers = true;
+                options.Lockout.MaxFailedAccessAttempts = 3;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
 
+                options.SignIn.RequireConfirmedEmail = true;
+                options.SignIn.RequireConfirmedPhoneNumber = false;
+
+                options.Tokens.PasswordResetTokenProvider = "CustomeAspResetPasswordTokenProvider";
                 options.Tokens.EmailConfirmationTokenProvider = "CustomAspEmailConfirmationTokenProvider";
             })
             .AddEntityFrameworkStores<UsingIdentityWithApiContext>()
             .AddDefaultTokenProviders()
+            .AddTokenProvider<CustomAspPasswordResetTokenProvider<AspUser>>("CustomeAspResetPasswordTokenProvider")
             .AddTokenProvider<CustomAspEmailConfirmationTokenProvider<AspUser>>("CustomAspEmailConfirmationTokenProvider")
             .AddPasswordValidator<CustomePasswordValidator<AspUser>>()
             ;

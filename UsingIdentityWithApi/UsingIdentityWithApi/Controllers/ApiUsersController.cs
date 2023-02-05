@@ -78,7 +78,8 @@ namespace UsingIdentityWithApi.Controllers
                     {
                         Id = Guid.NewGuid().ToString(),
                         UserName = userDto.UserName,
-                        Email = userDto.Email
+                        Email = userDto.Email,
+                        PhoneNumber = userDto.PhoneNumber
                     };
 
                     var res = await _userManager.CreateAsync(user, userDto.Password);
@@ -105,8 +106,8 @@ namespace UsingIdentityWithApi.Controllers
         }
 
 
-        [HttpGet("ConfirmEmailAddress")]
-        public async Task<IActionResult> ConfirmEmailAddress(string token,string email)
+        [HttpPost("ConfirmEmailAddress")]
+        public async Task<IActionResult> ConfirmEmailAddress(string token, string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
 
@@ -131,14 +132,26 @@ namespace UsingIdentityWithApi.Controllers
             {
                 var user = await _userManager.FindByNameAsync(loginDto.UserName);
 
-                if (user is not null && await _userManager.CheckPasswordAsync(user, loginDto.Password))
+                if (user is not null && !await _userManager.IsLockedOutAsync(user))
                 {
-                    if (!await _userManager.IsEmailConfirmedAsync(user))
-                        return BadRequest("Email is not confirmed");
+                    if (await _userManager.CheckPasswordAsync(user, loginDto.Password))
+                    {
+                        if (!await _userManager.IsEmailConfirmedAsync(user))
+                            return BadRequest("Email is not confirmed");
 
-                    var token = await GenerateJwtToken(user);
+                        await _userManager.ResetAccessFailedCountAsync(user);
 
-                    return Ok(token);
+                        var token = await GenerateJwtToken(user);
+
+                        return Ok(token);
+                    }
+
+                    await _userManager.AccessFailedAsync(user);
+
+                    if (await _userManager.IsLockedOutAsync(user))
+                    {
+                        //send email to the user,notify him of lockout
+                    }
                 }
 
                 return BadRequest("Invalid UserName Or Password");
@@ -167,7 +180,7 @@ namespace UsingIdentityWithApi.Controllers
         }
 
 
-        [HttpPost("ForgetPassword")]
+        [HttpGet("ForgetPassword")]
         public async Task<IActionResult> ForgetPassword([FromQuery] ForgetPasswordDto forgetPassword)
         {
             if (ModelState.IsValid)
@@ -181,6 +194,8 @@ namespace UsingIdentityWithApi.Controllers
                     var resetURL = Url.Action("ResetPassword", "AspUsers", new { token = token, email = user.Email }, Request.Scheme);
 
                     System.IO.File.WriteAllText("D:\\resetLink.txt", resetURL);
+
+                    return Ok(token);
                 }
                 else
                 {
@@ -207,11 +222,53 @@ namespace UsingIdentityWithApi.Controllers
                     {
                         return BadRequest(result.Errors);
                     }
+
+                    if (await _userManager.IsLockedOutAsync(user))
+                        await _userManager.SetLockoutEndDateAsync(user, DateTime.UtcNow);
+
                     return Ok();
                 }
                 return BadRequest("User Not Found");
             }
             return BadRequest();
+        }
+
+
+        [HttpGet("GeneratePhoneNumberConfirmationToken")]
+        public async Task<IActionResult> GeneratePhoneNumberConfirmationToken(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user is not null)
+            {
+                var token = await _userManager.GenerateChangePhoneNumberTokenAsync(user, user.PhoneNumber);
+
+                var resetURL = Url.Action("ConfirmPhoneNumber", "ApiUsers",
+                    new { token = token, email = user.Email }, Request.Scheme);
+
+                System.IO.File.WriteAllText("D:\\PhoneNumberConfirmationLink.txt", resetURL);
+
+                return Ok(token);
+            }
+            return BadRequest("User Not Found");
+        }
+
+
+        [HttpPost("ConfirmPhoneNumber")]
+        public async Task<IActionResult> ConfirmPhoneNumber(string token, string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user is not null)
+            {
+                var result = await _userManager.ChangePhoneNumberAsync(user, user.PhoneNumber, token);
+
+                if (result.Succeeded)
+                    return Ok();
+                else
+                    return BadRequest(result.Errors);
+            }
+            return BadRequest("User Not Found");
         }
     }
 }

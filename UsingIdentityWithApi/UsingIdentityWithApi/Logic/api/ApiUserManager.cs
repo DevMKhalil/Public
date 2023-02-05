@@ -33,29 +33,15 @@ namespace UsingIdentityWithApi.Logic.api
             _userTwoFactorTokenProvider = userTwoFactorTokenProvider;
         }
 
-        #region GenerateEmailConfirmationToken
+        #region Generate Email Confirmation Token
         public override Task<string> GenerateEmailConfirmationTokenAsync(ApiUser user)
         {
-            return GenerateUserTokenAsync(user, string.Empty, ConfirmEmailTokenPurpose);
-        }
-
-        public override Task<string> GenerateUserTokenAsync(ApiUser user, string tokenProvider, string purpose)
-        {
             ThrowIfDisposed();
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-            if (_userTwoFactorTokenProvider is null)
-            {
-                throw new ArgumentNullException(nameof(tokenProvider));
-            }
-
-            return _userTwoFactorTokenProvider.GenerateAsync(purpose, this, user);
+            return GenerateUserTokenAsync(user, string.Empty, ConfirmEmailTokenPurpose);
         }
         #endregion
 
-        #region ConfirmEmail
+        #region Confirm Email
         public async override Task<IdentityResult> ConfirmEmailAsync(ApiUser user, string token)
         {
             ThrowIfDisposed();
@@ -81,6 +67,54 @@ namespace UsingIdentityWithApi.Logic.api
                 throw new NotSupportedException("StoreNotIUserEmailStore");
             }
             return cast;
+        }
+        #endregion
+
+        #region Generate Password Reset Token
+        public override Task<string> GeneratePasswordResetTokenAsync(ApiUser user)
+        {
+            ThrowIfDisposed();
+            return GenerateUserTokenAsync(user, string.Empty, ResetPasswordTokenPurpose);
+        } 
+        #endregion
+
+        #region Reset Password
+        public override async Task<IdentityResult> ResetPasswordAsync(ApiUser user, string token, string newPassword)
+        {
+            ThrowIfDisposed();
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+
+            // Make sure the token is valid and the stamp matches
+            if (!await VerifyUserTokenAsync(user, Options.Tokens.PasswordResetTokenProvider, ResetPasswordTokenPurpose, token))
+            {
+                return IdentityResult.Failed(ErrorDescriber.InvalidToken());
+            }
+            var result = await UpdatePasswordHash(user, newPassword, validatePassword: true);
+            if (!result.Succeeded)
+            {
+                return result;
+            }
+            return await UpdateUserAsync(user);
+        } 
+        #endregion
+
+        #region Generate And Verify UserToken
+        public override Task<string> GenerateUserTokenAsync(ApiUser user, string tokenProvider, string purpose)
+        {
+            ThrowIfDisposed();
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+            if (_userTwoFactorTokenProvider is null)
+            {
+                throw new ArgumentNullException("tokenProvider");
+            }
+
+            return _userTwoFactorTokenProvider.GenerateAsync(purpose, this, user);
         }
 
         public override async Task<bool> VerifyUserTokenAsync(ApiUser user, string tokenProvider, string purpose, string token)

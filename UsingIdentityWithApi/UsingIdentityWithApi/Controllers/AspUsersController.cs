@@ -79,7 +79,8 @@ namespace UsingIdentityWithApi.Controllers
                     {
                         Id = Guid.NewGuid().ToString(),
                         UserName = userDto.UserName,
-                        Email = userDto.Email
+                        Email = userDto.Email,
+                        PhoneNumber = userDto.PhoneNumber
                     };
 
                     var res = await _aspUserManager.CreateAsync(user, userDto.Password);
@@ -88,7 +89,7 @@ namespace UsingIdentityWithApi.Controllers
                     {
                         var token = await _aspUserManager.GenerateEmailConfirmationTokenAsync(user);
 
-                        var resetURL = Url.Action("ConfirmEmailAddress", "AspUsers", 
+                        var resetURL = Url.Action("ConfirmEmailAddress", "AspUsers",
                             new { token = token, email = user.Email }, Request.Scheme);
 
                         System.IO.File.WriteAllText("D:\\EmailConfirmationLink.txt", resetURL);
@@ -106,7 +107,7 @@ namespace UsingIdentityWithApi.Controllers
         }
 
 
-        [HttpGet("ConfirmEmailAddress")]
+        [HttpPost("ConfirmEmailAddress")]
         public async Task<IActionResult> ConfirmEmailAddress(string token, string email)
         {
             var user = await _aspUserManager.FindByEmailAsync(email);
@@ -126,22 +127,33 @@ namespace UsingIdentityWithApi.Controllers
 
         [HttpGet("AspLogin")]
         //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login([FromQuery]LoginUserDto loginDto)
+        public async Task<IActionResult> Login([FromQuery] LoginUserDto loginDto)
         {
             if (ModelState.IsValid)
             {
                 var user = await _aspUserManager.FindByNameAsync(loginDto.UserName);
 
-                if (user is not null && await _aspUserManager.CheckPasswordAsync(user,loginDto.Password))
+                if (user is not null && !await _aspUserManager.IsLockedOutAsync(user))
                 {
-                    if (! await _aspUserManager.IsEmailConfirmedAsync(user))
-                        return BadRequest("Email is not confirmed");
+                    if (await _aspUserManager.CheckPasswordAsync(user, loginDto.Password))
+                    {
+                        if (!await _aspUserManager.IsEmailConfirmedAsync(user))
+                            return BadRequest("Email is not confirmed");
 
-                    var token = await GenerateJwtToken(user);
+                        await _aspUserManager.ResetAccessFailedCountAsync(user);
 
-                    return Ok(token);
+                        var token = await GenerateJwtToken(user);
+
+                        return Ok(token);
+                    }
+
+                    await _aspUserManager.AccessFailedAsync(user);
+
+                    if (await _aspUserManager.IsLockedOutAsync(user))
+                    {
+                        //send email to the user,notify him of lockout
+                    }
                 }
-
                 return BadRequest("Invalid UserName Or Password");
             }
 
@@ -179,9 +191,11 @@ namespace UsingIdentityWithApi.Controllers
                 {
                     var token = await _aspUserManager.GeneratePasswordResetTokenAsync(user);
 
-                    var resetURL = Url.Action("ResetPassword", "AspUsers", new { token = token, email = user.Email}, Request.Scheme);
+                    var resetURL = Url.Action("ResetPassword", "AspUsers", new { token = token, email = user.Email }, Request.Scheme);
 
                     System.IO.File.WriteAllText("D:\\resetLink.txt", resetURL);
+
+                    return Ok(token);
                 }
                 else
                 {
@@ -202,17 +216,59 @@ namespace UsingIdentityWithApi.Controllers
 
                 if (user is not null)
                 {
-                    var result = await _aspUserManager.ResetPasswordAsync(user,forgetPassword.Token,forgetPassword.Password);
+                    var result = await _aspUserManager.ResetPasswordAsync(user, forgetPassword.Token, forgetPassword.Password);
 
                     if (!result.Succeeded)
                     {
                         return BadRequest(result.Errors);
                     }
+
+                    if (await _aspUserManager.IsLockedOutAsync(user))
+                        await _aspUserManager.SetLockoutEndDateAsync(user, DateTime.UtcNow);
+
                     return Ok();
                 }
                 return BadRequest("User Not Found");
             }
             return BadRequest();
+        }
+
+
+        [HttpGet("GeneratePhoneNumberConfirmationToken")]
+        public async Task<IActionResult> GeneratePhoneNumberConfirmationToken(string userId)
+        {
+            var user = await _aspUserManager.FindByIdAsync(userId);
+
+            if (user is not null)
+            {
+                var token = await _aspUserManager.GenerateChangePhoneNumberTokenAsync(user, user.PhoneNumber);
+
+                var resetURL = Url.Action("ConfirmPhoneNumber", "AspUsers",
+                    new { token = token, email = user.Email }, Request.Scheme);
+
+                System.IO.File.WriteAllText("D:\\PhoneNumberConfirmationLink.txt", resetURL);
+
+                return Ok(token);
+            }
+            return BadRequest("User Not Found");
+        }
+
+
+        [HttpPost("ConfirmPhoneNumber")]
+        public async Task<IActionResult> ConfirmPhoneNumber(string token, string email)
+        {
+            var user = await _aspUserManager.FindByEmailAsync(email);
+
+            if (user is not null)
+            {
+                var result = await _aspUserManager.ChangePhoneNumberAsync(user, user.PhoneNumber, token);
+
+                if (result.Succeeded)
+                    return Ok();
+                else
+                    return BadRequest(result.Errors);
+            }
+            return BadRequest("User Not Found");
         }
     }
 }
