@@ -143,11 +143,7 @@ namespace UsingIdentityWithApi.Controllers
                         await _aspUserManager.ResetAccessFailedCountAsync(user);
 
                         if (await _aspUserManager.GetTwoFactorEnabledAsync(user))
-                        {
-                            var validateProviders = await _aspUserManager.GetValidTwoFactorProvidersAsync(user);
-
-                            //if (validateProviders.Contains(""))
-                        }
+                            return RedirectToAction("GetValidProviders", new { userId = user.Id });
 
                         var token = await GenerateJwtToken(user);
 
@@ -165,6 +161,64 @@ namespace UsingIdentityWithApi.Controllers
             }
 
             return BadRequest();
+        }
+
+
+        [HttpGet("GetValidProviders")]
+        public async Task<IActionResult> GetValidProviders(string userId)
+        {
+            var user = await _aspUserManager.FindByIdAsync(userId);
+
+            if (user is not null)
+            {
+                var result = await _aspUserManager.GetValidTwoFactorProvidersAsync(user);
+
+                return Ok(result);
+            }
+            return BadRequest("User Not Found");
+        }
+
+
+        [HttpGet("GenerateTwoFactorToken")]
+        public async Task<IActionResult> GenerateTwoFactorToken(string userId, string provider)
+        {
+            var user = await _aspUserManager.FindByIdAsync(userId);
+
+            if (user is not null)
+            {
+                var validProviders = await _aspUserManager.GetValidTwoFactorProvidersAsync(user);
+
+                if (validProviders.Contains(provider))
+                {
+                    var token = await _aspUserManager.GenerateTwoFactorTokenAsync(user, provider);
+
+                    System.IO.File.WriteAllText("D:\\TwoFactorToken.txt", token);
+
+                    return Ok(token);
+                }
+            }
+            return BadRequest("User Not Found");
+        }
+
+
+        [HttpPost("ValidateTwoFactorToken")]
+        public async Task<IActionResult> ValidateTwoFactorToken(string userId, string provider, string token)
+        {
+            var user = await _aspUserManager.FindByIdAsync(userId);
+
+            if (user is not null)
+            {
+                var isValid = await _aspUserManager.VerifyTwoFactorTokenAsync(user, provider, token);
+
+                if (isValid)
+                {
+                    var jwtToken = await GenerateJwtToken(user);
+
+                    return Ok(jwtToken);
+                }
+                return BadRequest("Invalid Token");
+            }
+            return BadRequest("User Not Found");
         }
 
 
@@ -187,7 +241,7 @@ namespace UsingIdentityWithApi.Controllers
         }
 
 
-        [HttpPost("ForgetPassword")]
+        [HttpGet("ForgetPassword")]
         public async Task<IActionResult> ForgetPassword([FromQuery] ForgetPasswordDto forgetPassword)
         {
             if (ModelState.IsValid)

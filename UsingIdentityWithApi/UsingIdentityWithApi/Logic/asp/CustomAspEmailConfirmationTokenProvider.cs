@@ -14,6 +14,13 @@ namespace UsingIdentityWithApi.Logic.asp
         {
 
         }
+
+        public async override Task<bool> CanGenerateTwoFactorTokenAsync(UserManager<TUser> manager, TUser user)
+        {
+            var email = await manager.GetEmailAsync(user);
+
+            return !string.IsNullOrWhiteSpace(email) && await manager.IsEmailConfirmedAsync(user);
+        }
     }
 
     public class CustomAspEmailConfirmationTokenProviderOptions : DataProtectionTokenProviderOptions
