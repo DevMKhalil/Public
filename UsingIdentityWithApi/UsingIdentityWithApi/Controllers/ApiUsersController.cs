@@ -141,6 +141,13 @@ namespace UsingIdentityWithApi.Controllers
 
                         await _userManager.ResetAccessFailedCountAsync(user);
 
+                        if (await _userManager.GetTwoFactorEnabledAsync(user))
+                        {
+                            var validateProviders = await _userManager.GetValidTwoFactorProvidersAsync(user);
+
+                            //if (validateProviders.Contains(""))
+                        }
+
                         var token = await GenerateJwtToken(user);
 
                         return Ok(token);
@@ -262,6 +269,24 @@ namespace UsingIdentityWithApi.Controllers
             if (user is not null)
             {
                 var result = await _userManager.ChangePhoneNumberAsync(user, user.PhoneNumber, token);
+
+                if (result.Succeeded)
+                    return Ok();
+                else
+                    return BadRequest(result.Errors);
+            }
+            return BadRequest("User Not Found");
+        }
+
+
+        [HttpPost("EnableTwoFactor")]
+        public async Task<IActionResult> EnableTwoFactor(string email,bool enabled)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user is not null)
+            {
+                var result = await _userManager.SetTwoFactorEnabledAsync(user, enabled);
 
                 if (result.Succeeded)
                     return Ok();

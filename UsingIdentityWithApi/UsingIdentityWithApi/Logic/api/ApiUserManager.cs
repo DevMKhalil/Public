@@ -7,8 +7,6 @@ namespace UsingIdentityWithApi.Logic.api
 {
     public class ApiUserManager : UserManager<ApiUser>
     {
-        private readonly IUserTwoFactorTokenProvider<ApiUser> _userTwoFactorTokenProvider;
-
         public ApiUserManager(
             IUserStore<ApiUser> store,
             IOptions<IdentityOptions> optionsAccessor,
@@ -18,8 +16,7 @@ namespace UsingIdentityWithApi.Logic.api
             ILookupNormalizer keyNormalizer,
             IdentityErrorDescriber errors,
             IServiceProvider services,
-            ILogger<UserManager<ApiUser>> logger,
-            IUserTwoFactorTokenProvider<ApiUser> userTwoFactorTokenProvider ) : base(
+            ILogger<UserManager<ApiUser>> logger) : base(
                 store,
                 optionsAccessor,
                 passwordHasher,
@@ -30,14 +27,36 @@ namespace UsingIdentityWithApi.Logic.api
                 services,
                 logger)
         {
-            _userTwoFactorTokenProvider = userTwoFactorTokenProvider;
+
         }
+
+        #region Generate Phone Number Confirmation Token
+        public override Task<string> GenerateChangePhoneNumberTokenAsync(ApiUser user, string phoneNumber)
+        {
+            ThrowIfDisposed();
+            return GenerateUserTokenAsync(user, CustomTokenOptions.ApiCustomPhoneNumberConfirmationTokenProvider, ChangePhoneNumberTokenPurpose + ":" + phoneNumber);
+        }
+        #endregion
+
+        #region Confirm Phone Number
+        public override Task<bool> VerifyChangePhoneNumberTokenAsync(ApiUser user, string token, string phoneNumber)
+        {
+            ThrowIfDisposed();
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+
+            // Make sure the token is valid and the stamp matches
+            return VerifyUserTokenAsync(user, CustomTokenOptions.ApiCustomPhoneNumberConfirmationTokenProvider, ChangePhoneNumberTokenPurpose + ":" + phoneNumber, token);
+        } 
+        #endregion
 
         #region Generate Email Confirmation Token
         public override Task<string> GenerateEmailConfirmationTokenAsync(ApiUser user)
         {
             ThrowIfDisposed();
-            return GenerateUserTokenAsync(user, string.Empty, ConfirmEmailTokenPurpose);
+            return GenerateUserTokenAsync(user, CustomTokenOptions.ApiCustomEmailConfirmationTokenProvider, ConfirmEmailTokenPurpose);
         }
         #endregion
 
@@ -51,7 +70,7 @@ namespace UsingIdentityWithApi.Logic.api
                 throw new ArgumentNullException(nameof(user));
             }
 
-            if (!await VerifyUserTokenAsync(user, Options.Tokens.EmailConfirmationTokenProvider, ConfirmEmailTokenPurpose, token))
+            if (!await VerifyUserTokenAsync(user, CustomTokenOptions.ApiCustomEmailConfirmationTokenProvider, ConfirmEmailTokenPurpose, token))
             {
                 return IdentityResult.Failed(ErrorDescriber.InvalidToken());
             }
@@ -74,7 +93,7 @@ namespace UsingIdentityWithApi.Logic.api
         public override Task<string> GeneratePasswordResetTokenAsync(ApiUser user)
         {
             ThrowIfDisposed();
-            return GenerateUserTokenAsync(user, string.Empty, ResetPasswordTokenPurpose);
+            return GenerateUserTokenAsync(user, CustomTokenOptions.ApiCustomResetPasswordTokenProvider, ResetPasswordTokenPurpose);
         } 
         #endregion
 
@@ -88,7 +107,7 @@ namespace UsingIdentityWithApi.Logic.api
             }
 
             // Make sure the token is valid and the stamp matches
-            if (!await VerifyUserTokenAsync(user, Options.Tokens.PasswordResetTokenProvider, ResetPasswordTokenPurpose, token))
+            if (!await VerifyUserTokenAsync(user, CustomTokenOptions.ApiCustomResetPasswordTokenProvider, ResetPasswordTokenPurpose, token))
             {
                 return IdentityResult.Failed(ErrorDescriber.InvalidToken());
             }
@@ -98,49 +117,6 @@ namespace UsingIdentityWithApi.Logic.api
                 return result;
             }
             return await UpdateUserAsync(user);
-        } 
-        #endregion
-
-        #region Generate And Verify UserToken
-        public override Task<string> GenerateUserTokenAsync(ApiUser user, string tokenProvider, string purpose)
-        {
-            ThrowIfDisposed();
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-            if (_userTwoFactorTokenProvider is null)
-            {
-                throw new ArgumentNullException("tokenProvider");
-            }
-
-            return _userTwoFactorTokenProvider.GenerateAsync(purpose, this, user);
-        }
-
-        public override async Task<bool> VerifyUserTokenAsync(ApiUser user, string tokenProvider, string purpose, string token)
-        {
-            ThrowIfDisposed();
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-            if (tokenProvider == null)
-            {
-                throw new ArgumentNullException(nameof(tokenProvider));
-            }
-
-            if (_userTwoFactorTokenProvider is null)
-            {
-                throw new NotSupportedException($"No Supported Token Provider {tokenProvider} For User{nameof(ApiUser)} ");
-            }
-            // Make sure the token is valid
-            var result = await _userTwoFactorTokenProvider.ValidateAsync(purpose, token, this, user);
-
-            if (!result)
-            {
-                Logger.LogWarning("VerifyUserTokenFailed", "VerifyUserTokenAsync() failed with purpose: {purpose} for user.", purpose);
-            }
-            return result;
         } 
         #endregion
     }

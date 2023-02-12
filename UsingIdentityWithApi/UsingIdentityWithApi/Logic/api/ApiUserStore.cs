@@ -10,7 +10,8 @@ namespace UsingIdentityWithApi.Logic.api
         IUserSecurityStampStore<ApiUser>, 
         IUserEmailStore<ApiUser>, 
         IUserLockoutStore<ApiUser>,
-        IUserPhoneNumberStore<ApiUser>
+        IUserPhoneNumberStore<ApiUser>,
+        IUserTwoFactorStore<ApiUser>
     {
         private readonly IUsingIdentityWithApiContext _context;
 
@@ -112,6 +113,11 @@ namespace UsingIdentityWithApi.Logic.api
             return Task.FromResult(user.SecurityStamp);
         }
 
+        public Task<bool> GetTwoFactorEnabledAsync(ApiUser user, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(user.TwoFactorEnabled);
+        }
+
         public Task<string> GetUserIdAsync(ApiUser user, CancellationToken cancellationToken)
         {
             return Task.FromResult(user.Id);
@@ -196,6 +202,12 @@ namespace UsingIdentityWithApi.Logic.api
         public Task SetSecurityStampAsync(ApiUser user, string stamp, CancellationToken cancellationToken)
         {
             user.SecurityStamp = stamp;
+            return Task.CompletedTask;
+        }
+
+        public Task SetTwoFactorEnabledAsync(ApiUser user, bool enabled, CancellationToken cancellationToken)
+        {
+            user.TwoFactorEnabled = enabled;
             return Task.CompletedTask;
         }
 

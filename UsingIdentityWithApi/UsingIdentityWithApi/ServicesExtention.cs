@@ -36,21 +36,25 @@ namespace UsingIdentityWithApi
 
                 options.SignIn.RequireConfirmedEmail = true;
                 options.SignIn.RequireConfirmedPhoneNumber = false;
-
-                options.Tokens.PasswordResetTokenProvider = "ApiCustomeResetPasswordTokenProvider";
-                options.Tokens.EmailConfirmationTokenProvider = "ApiCustomEmailConfirmationTokenProvider";
-
             })
-            .AddTokenProvider<CustomApiPasswordResetTokenProvider<ApiUser>>("ApiCustomeResetPasswordTokenProvider")
-            .AddTokenProvider<CustomApiEmailConfirmationTokenProvider<ApiUser>>("ApiCustomEmailConfirmationTokenProvider")
-            .AddPasswordValidator<CustomePasswordValidator<ApiUser>>()
-            ;
+            .AddApiCustomTokenProviders()
+            .AddPasswordValidator<CustomePasswordValidator<ApiUser>>();
 
             services.AddScoped<IUserStore<ApiUser>, ApiUserStore>();
-            services.AddScoped<IUserTwoFactorTokenProvider<ApiUser>, CustomDataProtectionTokenProvider<ApiUser>>();
             services.AddScoped<ApiUserManager>();
 
             services.AddScoped<IUserClaimsPrincipalFactory<ApiUser>, ApiUserClaimsPrincipalFactory>();
+        }
+
+        private static IdentityBuilder AddApiCustomTokenProviders(this IdentityBuilder builder)
+        {
+            var userType = builder.UserType;
+            var CustomApiPasswordResetProviderType = typeof(CustomApiPasswordResetTokenProvider<>).MakeGenericType(userType);
+            var phoneNumberProviderType = typeof(CustomApiPhoneNumberConfirmationTokenProvider<>).MakeGenericType(userType);
+            var emailTokenProviderType = typeof(CustomApiEmailConfirmationTokenProvider<>).MakeGenericType(userType);
+            return builder.AddTokenProvider(CustomTokenOptions.ApiCustomResetPasswordTokenProvider, CustomApiPasswordResetProviderType)
+                .AddTokenProvider(CustomTokenOptions.ApiCustomEmailConfirmationTokenProvider, emailTokenProviderType)
+                .AddTokenProvider(CustomTokenOptions.ApiCustomPhoneNumberConfirmationTokenProvider, phoneNumberProviderType);
         }
 
         public static void AddIdentityForAspNetIdentityUser(this IServiceCollection services)
@@ -74,17 +78,24 @@ namespace UsingIdentityWithApi
                 options.SignIn.RequireConfirmedEmail = true;
                 options.SignIn.RequireConfirmedPhoneNumber = false;
 
-                options.Tokens.PasswordResetTokenProvider = "CustomeAspResetPasswordTokenProvider";
-                options.Tokens.EmailConfirmationTokenProvider = "CustomAspEmailConfirmationTokenProvider";
+                options.Tokens.PasswordResetTokenProvider = CustomTokenOptions.CustomAspResetPasswordTokenProvider;
+                options.Tokens.EmailConfirmationTokenProvider = CustomTokenOptions.CustomAspEmailConfirmationTokenProvider;
             })
             .AddEntityFrameworkStores<UsingIdentityWithApiContext>()
             .AddDefaultTokenProviders()
-            .AddTokenProvider<CustomAspPasswordResetTokenProvider<AspUser>>("CustomeAspResetPasswordTokenProvider")
-            .AddTokenProvider<CustomAspEmailConfirmationTokenProvider<AspUser>>("CustomAspEmailConfirmationTokenProvider")
-            .AddPasswordValidator<CustomePasswordValidator<AspUser>>()
-            ;
+            .AddAspCustomTokenProviders()
+            .AddPasswordValidator<CustomePasswordValidator<AspUser>>();
 
             services.AddScoped<IUserClaimsPrincipalFactory<AspUser>, AspUserClaimsPrincipalFactory>();
+        }
+
+        public static IdentityBuilder AddAspCustomTokenProviders(this IdentityBuilder builder)
+        {
+            var userType = builder.UserType;
+            var CustomAspPasswordResetProviderType = typeof(CustomAspPasswordResetTokenProvider<>).MakeGenericType(userType);
+            var CustomAspEmailConfirmationProviderType = typeof(CustomAspEmailConfirmationTokenProvider<>).MakeGenericType(userType);
+            return builder.AddTokenProvider(CustomTokenOptions.CustomAspResetPasswordTokenProvider, CustomAspPasswordResetProviderType)
+                .AddTokenProvider(CustomTokenOptions.CustomAspEmailConfirmationTokenProvider, CustomAspEmailConfirmationProviderType);
         }
 
         public static void AddContext(this IServiceCollection services, string connectionString)

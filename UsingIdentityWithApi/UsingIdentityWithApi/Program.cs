@@ -18,8 +18,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddContext(builder.Configuration.GetValue<string>("DefaultConnection"));
 
 // Add Identity Services
-builder.Services.AddIdentityForIdentityUser();
 builder.Services.AddIdentityForAspNetIdentityUser();
+builder.Services.AddIdentityForIdentityUser();
 
 // Add Mesc
 builder.Services.AddMisc();
