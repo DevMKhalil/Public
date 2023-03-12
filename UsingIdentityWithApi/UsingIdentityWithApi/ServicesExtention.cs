@@ -52,9 +52,11 @@ namespace UsingIdentityWithApi
             var CustomApiPasswordResetProviderType = typeof(CustomApiPasswordResetTokenProvider<>).MakeGenericType(userType);
             var phoneNumberProviderType = typeof(CustomApiPhoneNumberConfirmationTokenProvider<>).MakeGenericType(userType);
             var emailTokenProviderType = typeof(CustomApiEmailConfirmationTokenProvider<>).MakeGenericType(userType);
+            var authenticatorProviderType = typeof(AuthenticatorTokenProvider<>).MakeGenericType(userType);
             return builder.AddTokenProvider(CustomTokenOptions.ApiCustomResetPasswordTokenProvider, CustomApiPasswordResetProviderType)
                 .AddTokenProvider(CustomTokenOptions.ApiCustomEmailConfirmationTokenProvider, emailTokenProviderType)
-                .AddTokenProvider(CustomTokenOptions.ApiCustomPhoneNumberConfirmationTokenProvider, phoneNumberProviderType);
+                .AddTokenProvider(CustomTokenOptions.ApiCustomPhoneNumberConfirmationTokenProvider, phoneNumberProviderType)
+                .AddTokenProvider(CustomTokenOptions.ApiCustomAuthenticatorTokenProvider, authenticatorProviderType);
         }
 
         public static void AddIdentityForAspNetIdentityUser(this IServiceCollection services)

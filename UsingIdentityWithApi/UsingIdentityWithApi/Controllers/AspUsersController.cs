@@ -179,7 +179,7 @@ namespace UsingIdentityWithApi.Controllers
         }
 
 
-        [HttpGet("GenerateTwoFactorToken")]
+        [HttpGet("GenerateTwoStepToken")]
         public async Task<IActionResult> GenerateTwoFactorToken(string userId, string provider)
         {
             var user = await _aspUserManager.FindByIdAsync(userId);
@@ -201,7 +201,7 @@ namespace UsingIdentityWithApi.Controllers
         }
 
 
-        [HttpPost("ValidateTwoFactorToken")]
+        [HttpPost("ValidateTwoStepToken")]
         public async Task<IActionResult> ValidateTwoFactorToken(string userId, string provider, string token)
         {
             var user = await _aspUserManager.FindByIdAsync(userId);

@@ -4,14 +4,17 @@ using UsingIdentityWithApi.Application;
 
 namespace UsingIdentityWithApi.Logic.api
 {
-    public class ApiUserStore : 
+    public class ApiUserStore<TApiUserTokens> : 
         IUserStore<ApiUser>, 
         IUserPasswordStore<ApiUser>, 
         IUserSecurityStampStore<ApiUser>, 
         IUserEmailStore<ApiUser>, 
         IUserLockoutStore<ApiUser>,
         IUserPhoneNumberStore<ApiUser>,
-        IUserTwoFactorStore<ApiUser>
+        IUserTwoFactorStore<ApiUser>,
+        IUserAuthenticationTokenStore<ApiUser>,
+        IUserAuthenticatorKeyStore<ApiUser>
+        where TApiUserTokens : IdentityUserToken<TKey>, new()
     {
         private readonly IUsingIdentityWithApiContext _context;
 
@@ -61,6 +64,11 @@ namespace UsingIdentityWithApi.Logic.api
         public Task<int> GetAccessFailedCountAsync(ApiUser user, CancellationToken cancellationToken)
         {
             return Task.FromResult(user.AccessFailedCount);
+        }
+
+        public Task<string> GetAuthenticatorKeyAsync(ApiUser user, CancellationToken cancellationToken)
+        {
+            return GetTokenAsync(user, InternalLoginProvider, AuthenticatorKeyTokenName, cancellationToken);
         }
 
         public Task<string> GetEmailAsync(ApiUser user, CancellationToken cancellationToken)
@@ -113,6 +121,11 @@ namespace UsingIdentityWithApi.Logic.api
             return Task.FromResult(user.SecurityStamp);
         }
 
+        public Task<string> GetTokenAsync(ApiUser user, string loginProvider, string name, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<bool> GetTwoFactorEnabledAsync(ApiUser user, CancellationToken cancellationToken)
         {
             return Task.FromResult(user.TwoFactorEnabled);
@@ -139,10 +152,20 @@ namespace UsingIdentityWithApi.Logic.api
             return Task.FromResult(user.AccessFailedCount);
         }
 
+        public Task RemoveTokenAsync(ApiUser user, string loginProvider, string name, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task ResetAccessFailedCountAsync(ApiUser user, CancellationToken cancellationToken)
         {
             user.AccessFailedCount = default(int);
             return Task.CompletedTask;
+        }
+
+        public Task SetAuthenticatorKeyAsync(ApiUser user, string key, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
 
         public Task SetEmailAsync(ApiUser user, string email, CancellationToken cancellationToken)
@@ -205,6 +228,11 @@ namespace UsingIdentityWithApi.Logic.api
             return Task.CompletedTask;
         }
 
+        public Task SetTokenAsync(ApiUser user, string loginProvider, string name, string value, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task SetTwoFactorEnabledAsync(ApiUser user, bool enabled, CancellationToken cancellationToken)
         {
             user.TwoFactorEnabled = enabled;
@@ -224,5 +252,12 @@ namespace UsingIdentityWithApi.Logic.api
             if (res.IsSuccess) { return IdentityResult.Success; }
             else { return IdentityResult.Failed(new IdentityError[] { new IdentityError { Description = res.Error } }); }
         }
+
+        #region StoreFunctions
+        protected Task<ApiUserTokens> FindTokenAsync(ApiUser user, string loginProvider, string name, CancellationToken cancellationToken)
+        {
+
+        };
+        #endregion
     }
 }

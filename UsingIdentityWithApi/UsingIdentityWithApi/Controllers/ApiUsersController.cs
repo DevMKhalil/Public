@@ -171,16 +171,19 @@ namespace UsingIdentityWithApi.Controllers
 
             if (user is not null)
             {
-                var result = await _userManager.GetValidTwoFactorProvidersAsync(user);
+                var validProviders = await _userManager.GetValidTwoFactorProvidersAsync(user);
 
-                return Ok(result);
+                if (validProviders.Contains(CustomTokenOptions.ApiCustomAuthenticatorTokenProvider))
+                    return RedirectToAction("GetAuthenticatorKey");
+
+                return Ok(validProviders);
             }
             return BadRequest("User Not Found");
         }
 
 
-        [HttpGet("GenerateTwoFactorToken")]
-        public async Task<IActionResult> GenerateTwoFactorToken(string userId, string provider)
+        [HttpGet("GenerateTwoStepToken")]
+        public async Task<IActionResult> GenerateTwoStepToken(string userId, string provider)
         {
             var user = await _userManager.FindByIdAsync(userId);
 
@@ -192,7 +195,7 @@ namespace UsingIdentityWithApi.Controllers
                 {
                     var token = await _userManager.GenerateTwoFactorTokenAsync(user, provider);
 
-                    System.IO.File.WriteAllText("D:\\TwoFactorToken.txt", token);
+                    System.IO.File.WriteAllText("D:\\TwoStepToken.txt", token);
 
                     return Ok(token);
                 }
@@ -201,8 +204,8 @@ namespace UsingIdentityWithApi.Controllers
         }
 
 
-        [HttpPost("ValidateTwoFactorToken")]
-        public async Task<IActionResult> ValidateTwoFactorToken(string userId, string provider, string token)
+        [HttpPost("ValidateTwoStepToken")]
+        public async Task<IActionResult> ValidateTwoStepToken(string userId, string provider, string token)
         {
             var user = await _userManager.FindByIdAsync(userId);
 
@@ -334,6 +337,7 @@ namespace UsingIdentityWithApi.Controllers
 
 
         [HttpPost("EnableTwoFactor")]
+        [Obsolete("EnableTwoFactor is deprecated, please use RegisterAuthenticator instead.")]
         public async Task<IActionResult> EnableTwoFactor(string email,bool enabled)
         {
             var user = await _userManager.FindByEmailAsync(email);
@@ -348,6 +352,41 @@ namespace UsingIdentityWithApi.Controllers
                     return BadRequest(result.Errors);
             }
             return BadRequest("User Not Found");
+        }
+
+
+        [HttpGet("GetAuthenticatorKey")]
+        [Authorize]
+        public async Task<IActionResult> GetAuthenticatorKey()
+        {
+            var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
+
+            var authenticatorKey = await _userManager.GetAuthenticatorKeyAsync(user);
+
+            if (authenticatorKey == null)
+            { 
+                await _userManager.ResetAuthenticatorKeyAsync(user);
+                authenticatorKey = await _userManager.GetAuthenticatorKeyAsync(user);
+            }
+            System.IO.File.WriteAllText("D:\\authenticatorKey.txt", authenticatorKey);
+            return Ok(authenticatorKey);
+        }
+
+
+        [HttpPost("RegisterAuthenticator")]
+        [Authorize]
+        public async Task<IActionResult> RegisterAuthenticator(/*string authenticatorKey,*/string code)
+        {
+            var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
+
+            var isValid = await _userManager.VerifyTwoFactorTokenAsync(user,
+                CustomTokenOptions.ApiCustomAuthenticatorTokenProvider, code);
+
+            if (!isValid)
+                return BadRequest("Invalid Code");
+
+            await _userManager.SetTwoFactorEnabledAsync(user, true);
+            return Ok();
         }
     }
 }
