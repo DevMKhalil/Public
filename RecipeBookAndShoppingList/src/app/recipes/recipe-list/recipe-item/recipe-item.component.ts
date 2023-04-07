@@ -16,7 +16,7 @@ export class RecipeItemComponent implements OnInit {
   @Input() index!: number;
 
   ngOnInit(): void {
-    this.recipeItem = this.recipeService.getRecipe(this.index);
+    this.recipeItem = this.recipeService.getRecipe(this.index-1);
   }
 
 }
