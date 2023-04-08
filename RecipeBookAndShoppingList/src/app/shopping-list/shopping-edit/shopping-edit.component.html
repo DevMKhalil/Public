@@ -12,13 +12,18 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-xs-12">
-                    <button class="btn btn-success" [disabled]="!projectForm.valid" type="submit">Add</button>
-                    &nbsp;
-                    <button class="btn btn-danger" type="button">Delete</button>
-                    &nbsp;
-                    <button class="btn btn-primary" type="button">Clear</button>
-                </div>
+              <div class="col-xs-12">
+                <button class="btn btn-success" [disabled]="!projectForm.valid" type="submit">{{editMode ? 'Update' : 'Add'}}</button>
+                &nbsp;
+                <button class="btn btn-primary" type="button" (click)="ResetForm()">Clear</button>
+                &nbsp;
+                <button class="btn btn-danger"
+                        type="button"
+                        (click)="DeleteIngredient()"
+                        *ngIf="editMode">
+                  Delete
+                </button>
+              </div>
             </div>
         </form>
     </div>
