@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Ingredient } from '../../Shared/Ingredient.model';
 import { ShoppingListService } from '../shopping-list.service';
 
@@ -8,19 +9,22 @@ import { ShoppingListService } from '../shopping-list.service';
   styleUrls: ['./shopping-edit.component.css']
 })
 export class ShoppingEditComponent implements OnInit {
-  @ViewChild('nameInput') nameInputRef!: ElementRef;
-  @ViewChild('numberInput') numberInputRef!: ElementRef;
   @Output() ingredientAdded = new EventEmitter<Ingredient>();
 
   constructor(private shoppingListService: ShoppingListService) { }
 
   ngOnInit(): void {
+    this.projectForm = new FormGroup({
+      'Name': new FormControl(null, Validators.required),
+      'Amount': new FormControl(null, [Validators.required, Validators.pattern('^[1-9]+[0-9]*$')])
+    });
   }
 
-  onAddItem(){
-    const ingName = this.nameInputRef.nativeElement.value;
-    const ingNumber = this.numberInputRef.nativeElement.value;
-    const newIngrediant = new Ingredient(ingName,ingNumber);
+  onSave() {
+    console.log(this.projectForm.value);
+    const newIngrediant = new Ingredient(this.projectForm.value.Name, this.projectForm.value.Amount);
     this.shoppingListService.addIngredient(newIngrediant);
   }
+
+  projectForm!: FormGroup;
 }

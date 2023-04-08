@@ -8,6 +8,7 @@ import { Subject } from 'rxjs';
 export class ShoppingListService {
 
   ingredientChanged = new Subject<Ingredient[]>();
+  startEditing = new Subject<number>();
 
   constructor() { }
 
