@@ -9,6 +9,7 @@ import { Subject } from 'rxjs';
 })
 export class RecipeService {
   recipeSelected = new Subject<Recipe>();
+  recipeChanged = new Subject<Recipe[]>();
   constructor(private shoppingListService: ShoppingListService) { }
   recipeList: Recipe[] = [
     new Recipe('A test Recipe 1', 'This Is Simply a test 1', 'https://cdn.pixabay.com/photo/2016/06/15/19/09/food-1459693_960_720.jpg', [
@@ -32,5 +33,15 @@ export class RecipeService {
   }
   sendingredientList(ingredientList: Ingredient[]) {
     this.shoppingListService.addIngredientsToShopingList(ingredientList);
+  }
+
+  addRecipe(recipe: Recipe) {
+    this.recipeList.push(recipe);
+    this.recipeChanged.next(this.recipeList.slice());
+  }
+
+  updateRecipe(index: number, recipe: Recipe) {
+    this.recipeList[index] = recipe;
+    this.recipeChanged.next(this.recipeList.slice());
   }
 }
