@@ -47,3 +47,5 @@
 /UsingIdentityWithApi/UsingIdentityWithApi/bin/Debug/net6.0
 /UsingIdentityWithApi/.cr/personal/FavoritesList
 *.vsidx
+/.cr/personal/FavoritesList
+/RecipeBookAndShoppingList/.vs

@@ -22,6 +22,7 @@ private router: Router) { }
       .subscribe(
         (params: Params) => {
           this.id = +params['id'];
+          debugger;
           this.loadedRecipe = this.recipeService.getRecipe(this.id);
         }
       );
@@ -34,5 +35,10 @@ private router: Router) { }
   onEditRecipe(){
     //this.router.navigate(['edit'],{relativeTo: this.route});
     this.router.navigate(['../',this.id,'edit'],{relativeTo: this.route});
+  }
+
+  onDeleteRecipe() {
+    debugger;
+    this.recipeService.deleteRecipe(this.id);
   }
 }
