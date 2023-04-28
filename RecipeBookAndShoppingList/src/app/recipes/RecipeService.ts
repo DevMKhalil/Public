@@ -29,7 +29,6 @@ export class RecipeService {
     return this.recipeList.slice();
   }
   getRecipe(index: number) {
-    debugger;
     return this.recipeList[index];
   }
   sendingredientList(ingredientList: Ingredient[]) {
@@ -37,7 +36,6 @@ export class RecipeService {
   }
 
   addRecipe(recipe: Recipe) {
-    debugger;
     this.recipeList.push(new Recipe(
       recipe.name,
       recipe.description,
@@ -53,7 +51,6 @@ export class RecipeService {
   }
 
   deleteRecipe(index: number) {
-    debugger;
     this.recipeList.splice(index, 1);
     this.recipeChanged.next(this.recipeList.slice());
   }
