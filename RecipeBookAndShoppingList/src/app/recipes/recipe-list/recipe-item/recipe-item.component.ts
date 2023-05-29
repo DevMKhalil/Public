@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Recipe } from '../../Recipe.model';
-import { RecipeService } from '../../RecipeService';
+import { RecipeService } from "src/app/recipes/RecipeService";
 
 @Component({
   selector: 'app-recipe-item',

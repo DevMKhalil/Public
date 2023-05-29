@@ -2,11 +2,11 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { map } from "rxjs";
 import { Recipe } from "../Recipes/Recipe.model";
-import { RecipeService } from "../Recipes/RecipeService";
+import { RecipeService } from "src/app/recipes/RecipeService";
 
 @Injectable({providedIn:'root'})
 export class DataStorageService {
-  constructor(private http: HttpClient,private recipeService: RecipeService) { }
+  constructor(private http: HttpClient, private recipeService: RecipeService) { debugger; }
 
   storeRecipes() {
     const recipes = this.recipeService.getRecipes();
