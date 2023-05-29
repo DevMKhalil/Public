@@ -39,6 +39,7 @@ export class RecipeService {
     this.shoppingListService.addIngredientsToShopingList(ingredientList);
   }
   setRecipes(recipes: Recipe[]) {
+    debugger;
     this.recipeList = recipes;
     this.recipeChanged.next(this.recipeList.slice());
   }

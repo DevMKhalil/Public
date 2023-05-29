@@ -29,7 +29,12 @@ export class DataStorageService {
       }))
       .subscribe({
         next: res => {
+          debugger;
           this.recipeService.setRecipes(res);
+        },
+        error: err => {
+          let message = err['error']
+          alert(message['error']);
         }
       })
   }
