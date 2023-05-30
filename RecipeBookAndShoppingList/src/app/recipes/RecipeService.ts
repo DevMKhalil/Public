@@ -11,7 +11,7 @@ export class RecipeService {
   
   recipeSelected = new Subject<Recipe>();
   recipeChanged = new Subject<Recipe[]>();
-  constructor(private shoppingListService: ShoppingListService) { debugger }
+  constructor(private shoppingListService: ShoppingListService) {  }
   //private recipeList: Recipe[] = [
   //  new Recipe('A test Recipe 1', 'This Is Simply a test 1', 'https://cdn.pixabay.com/photo/2016/06/15/19/09/food-1459693_960_720.jpg', [
   //    new Ingredient('ginger', 15),
@@ -39,7 +39,7 @@ export class RecipeService {
     this.shoppingListService.addIngredientsToShopingList(ingredientList);
   }
   setRecipes(recipes: Recipe[]) {
-    debugger;
+    
     this.recipeList = recipes;
     this.recipeChanged.next(this.recipeList.slice());
   }
