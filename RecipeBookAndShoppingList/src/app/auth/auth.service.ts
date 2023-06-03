@@ -1,6 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, Subject, tap, throwError } from 'rxjs';
+import { Router } from '@angular/router';
+import { BehaviorSubject, catchError, ReplaySubject, Subject, tap, throwError } from 'rxjs';
 import { User } from './user.model';
 
 export interface AuthFireBaseResponseData {
@@ -18,7 +19,7 @@ export interface AuthFireBaseResponseData {
 })
 export class AuthService {
 
-  user: Subject<User> = new Subject<User>();
+  user = new BehaviorSubject<any>(null);
 
   signUp(email:string,password:string) {
     return this.http.post<AuthFireBaseResponseData>("https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCyKO6bXzOZjgG2FEJC9qXtVAqCQDYhY7E",
@@ -36,6 +37,11 @@ export class AuthService {
           this.handelAuthentication(resData.email, resData.localId, resData.idToken, +resData.expiresIn);
         })
     );
+  }
+
+  LogOut() {
+    this.user.next(null);
+    this.router.navigate(['./auth']);
   }
 
   LogIn(email: string, password: string) {
@@ -94,5 +100,5 @@ export class AuthService {
     return throwError(errorMessage);
   }
 
-  constructor(private http:HttpClient) { }
+  constructor(private http:HttpClient,private router:Router) { }
 }

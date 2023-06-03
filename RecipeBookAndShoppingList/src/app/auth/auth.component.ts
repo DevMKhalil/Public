@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { AuthFireBaseResponseData, AuthService } from './auth.service';
+import { AuthFireBaseResponseData, AuthService } from 'src/app/auth/auth.service';
 
 @Component({
   selector: 'app-auth',
@@ -50,12 +51,18 @@ export class AuthComponent implements OnInit {
     }
 
     this.authObs.subscribe({
-      next: res => { console.log(res); this.isLoading = false; },
-      error: err => { console.log(err); this.error = err; this.isLoading = false; }
+      next: res => {
+        //console.log(res);
+        this.isLoading = false; this.router.navigate(['./recipes'])
+      },
+      error: err => {
+        //console.log(err);
+        this.error = err; this.isLoading = false;
+      }
     });
 
     this.authForm.reset();
   }
 
-  constructor(private authService:AuthService) { }
+  constructor(private authService:AuthService,private router:Router) { }
 }
