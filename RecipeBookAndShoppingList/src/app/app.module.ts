@@ -17,6 +17,8 @@ import { DropdownDirective } from './Shared/dropdown.directive';
 import { ShoppingEditComponent } from './shopping-list/shopping-edit/shopping-edit.component';
 import { ShoppingListComponent } from './shopping-list/shopping-list.component';
 import { ShoppingListService } from './shopping-list/shopping-list.service';
+import { AuthComponent } from './auth/auth.component';
+import { SpinnerFirstComponent } from './Shared/Spinners/spinnerfirst/spinner-first.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +32,9 @@ import { ShoppingListService } from './shopping-list/shopping-list.service';
     ShoppingEditComponent,
     DropdownDirective,
     RecipeStartComponent,
-    RecipeEditComponent
+    RecipeEditComponent,
+    AuthComponent,
+    SpinnerFirstComponent
   ],
   imports: [
     BrowserModule,

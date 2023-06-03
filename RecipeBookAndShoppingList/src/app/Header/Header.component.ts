@@ -15,6 +15,9 @@ export class HeaderComponent{
   }
 
   onFeachData() {
-    this.dataService.fetchRecipes().subscribe();
+    this.dataService.fetchRecipes().subscribe(
+      {
+        error: err => { alert(err.error.error); }
+      });
   }
 }

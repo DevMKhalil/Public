@@ -16,8 +16,7 @@ export class DataStorageService {
           console.log(res);
         },
         error: err => {
-          let message = err['error']
-          alert(message['error']);
+          alert(err.error.error);
         }
       });
   }

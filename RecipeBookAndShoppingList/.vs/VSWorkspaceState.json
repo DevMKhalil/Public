@@ -3,7 +3,9 @@
     "",
     "\\src",
     "\\src\\app",
+    "\\src\\app\\recipes",
     "\\src\\app\\Shared"
   ],
+  "SelectedNode": "\\src\\app\\app-routing.module.ts",
   "PreviewInSolutionExplorer": false
 }
