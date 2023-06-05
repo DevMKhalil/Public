@@ -19,7 +19,7 @@ export interface AuthFireBaseResponseData {
 })
 export class AuthService {
 
-  user = new BehaviorSubject<any>(null);
+  user = new BehaviorSubject<User | null>(null);
   private tokenExpirationTimer: any;
 
   signUp(email:string,password:string) {
