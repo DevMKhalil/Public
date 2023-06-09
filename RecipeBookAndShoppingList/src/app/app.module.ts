@@ -19,7 +19,9 @@ import { ShoppingListComponent } from './shopping-list/shopping-list.component';
 import { ShoppingListService } from './shopping-list/shopping-list.service';
 import { AuthComponent } from './auth/auth.component';
 import { SpinnerFirstComponent } from './Shared/Spinners/spinnerfirst/spinner-first.component';
+import { SpinnerSecondComponent } from './Shared/Spinners/spinnerSecond/spinner-second.component';
 import { AuthInterceptorService } from './auth/auth-interceptor';
+import { AlertComponent } from './Shared/alert/alert.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +37,9 @@ import { AuthInterceptorService } from './auth/auth-interceptor';
     RecipeStartComponent,
     RecipeEditComponent,
     AuthComponent,
-    SpinnerFirstComponent
+    SpinnerFirstComponent,
+    SpinnerSecondComponent,
+    AlertComponent
   ],
   imports: [
     BrowserModule,

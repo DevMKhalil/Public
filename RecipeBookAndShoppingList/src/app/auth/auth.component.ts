@@ -53,15 +53,21 @@ export class AuthComponent implements OnInit {
     this.authObs.subscribe({
       next: res => {
         //console.log(res);
-        this.isLoading = false; this.router.navigate(['./recipes'])
+        this.isLoading = false;
+        this.router.navigate(['./recipes']);
       },
       error: err => {
         //console.log(err);
-        this.error = err; this.isLoading = false;
+        this.error = err;
+        this.isLoading = false;
       }
     });
 
     this.authForm.reset();
+  }
+
+  onHandelError() {
+    this.error = '';
   }
 
   constructor(private authService:AuthService,private router:Router) { }
