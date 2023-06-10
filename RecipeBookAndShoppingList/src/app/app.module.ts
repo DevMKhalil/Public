@@ -7,7 +7,6 @@ import { AppRoutingModule } from 'src/app/app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './Header/Header.component';
 import { RecipeService } from './recipes/RecipeService';
-import { DropdownDirective } from './Shared/dropdown.directive';
 import { ShoppingEditComponent } from './shopping-list/shopping-edit/shopping-edit.component';
 import { ShoppingListComponent } from './shopping-list/shopping-list.component';
 import { ShoppingListService } from './shopping-list/shopping-list.service';
@@ -24,7 +23,6 @@ import { RecipesModule } from './recipes/recipes.module';
     HeaderComponent,
     ShoppingListComponent,
     ShoppingEditComponent,
-    DropdownDirective,
     AuthComponent,
     SpinnerFirstComponent,
     SpinnerSecondComponent,

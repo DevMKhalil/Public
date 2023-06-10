@@ -8,11 +8,9 @@ import { AuthService } from "src/app/auth/auth.service";
 export class AuthInterceptorService implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    debugger;
     return this.authService.user.pipe(
       take(1),
       exhaustMap(user => {
-        debugger;
           if (!user)
             return next.handle(req);
           const modReq = req.clone({ params: new HttpParams().set('auth', user.token ?? '') });
