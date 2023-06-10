@@ -1,8 +1,7 @@
-import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { AppRoutingModule } from 'src/app/app-routing.module';
-import { DropdownDirective } from "../Shared/dropdown.directive";
+import { SharedModule } from 'src/app/Shared/shared.module';
 import { RecipeDetailComponent } from "./recipe-detail/recipe-detail.component";
 import { RecipeEditComponent } from "./recipe-edit/recipe-edit.component";
 import { RecipeItemComponent } from "./recipe-list/recipe-item/recipe-item.component";
@@ -18,17 +17,15 @@ import { RecipesComponent } from "./recipes.component";
     RecipeDetailComponent,
     RecipeItemComponent,
     RecipeStartComponent,
-    RecipeEditComponent,
-    DropdownDirective
+    RecipeEditComponent
   ],
   imports: [
-    CommonModule,
     AppRoutingModule,
     RecipesRoutingModule,
     ReactiveFormsModule,
+    SharedModule
   ],
   exports: [
-    DropdownDirective
   ]
 })
 export class RecipesModule {}
