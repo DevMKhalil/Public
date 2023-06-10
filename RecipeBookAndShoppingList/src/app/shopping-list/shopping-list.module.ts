@@ -1,6 +1,5 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { AppRoutingModule } from "../app-routing.module";
 import { SharedModule } from 'src/app/Shared/shared.module';
 import { ShoppingEditComponent } from "./shopping-edit/shopping-edit.component";
 import { ShoppingListComponent } from "./shopping-list.component";
@@ -12,7 +11,7 @@ import { ShoppingListComponent } from "./shopping-list.component";
     ShoppingEditComponent
   ],
   imports: [
-    RouterModule.forChild([{ path: 'shopping-list', component: ShoppingListComponent }]),
+    RouterModule.forChild([{ path: '', component: ShoppingListComponent }]),
     SharedModule
   ]
 })
