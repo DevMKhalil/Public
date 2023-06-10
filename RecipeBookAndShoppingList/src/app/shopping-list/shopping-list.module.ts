@@ -1,5 +1,4 @@
 import { NgModule } from "@angular/core";
-import { ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 import { AppRoutingModule } from "../app-routing.module";
 import { SharedModule } from 'src/app/Shared/shared.module';
@@ -14,7 +13,6 @@ import { ShoppingListComponent } from "./shopping-list.component";
   ],
   imports: [
     AppRoutingModule,
-    ReactiveFormsModule,
     RouterModule.forChild([{ path: 'shopping-list', component: ShoppingListComponent }]),
     SharedModule
   ]
